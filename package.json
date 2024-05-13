@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "tunnel": "npx expo start --tunnel"
+    "tunnel": "npx expo start --tunnel",
+    "seed": "node ./db/seed.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.1",
@@ -30,5 +31,9 @@
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
-  "private": true
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
