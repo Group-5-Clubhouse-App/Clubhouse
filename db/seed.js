@@ -15,10 +15,8 @@ const createUsersAndPosts = async () => {
     where: {
       OR: [
         { username: 'uno' },
-        { username: 'does' },
         { username: 'dos' },
-        { username: 'tres' },
-        { username: 'admin' }
+        { username: 'tres' }
       ]
     }
   });
@@ -28,10 +26,8 @@ const createUsersAndPosts = async () => {
       where: {
         OR: [
           { username: 'uno' },
-          { username: 'does' },
           { username: 'dos' },
-          { username: 'tres' },
-          { username: 'admin' }
+          { username: 'tres' }
         ]
       }
     });
