@@ -2,9 +2,8 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, Text, View } from 'react-native';
 
-const Navbar = () => {
+const NavBar = () => {
   const navigation = useNavigation();
-
   const navigateToScreen = (screenName) => {
     navigation.navigate(screenName);
   };
@@ -14,11 +13,17 @@ const Navbar = () => {
       <TouchableOpacity onPress={() => navigateToScreen('Home')}>
         <Text>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Settings')}>
-        <Text>Settings</Text>
+      <TouchableOpacity onPress={() => navigateToScreen('Post')}>
+        <Text>Create Post</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen('Notifications')}>
+        <Text>Notifications</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
+        <Text>Profile</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default Navbar;
+export default NavBar;
