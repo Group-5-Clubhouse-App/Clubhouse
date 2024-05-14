@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { AsyncStorage } from 'react-native';
 
-const TokenVerification = ({ navigation }) => {
+const CheckToken = ({ navigation }) => {
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -27,4 +27,4 @@ return null;
 
 };
 
-export default TokenVerification;
+export default CheckToken;
