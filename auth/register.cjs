@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
   }
 
   // Check if user already exists
-  const existingUser = await prisma.user.findUnique({ where: { username } });
+  const existingUser = await prisma.users.findUnique({ where: { username } });
   if (existingUser) {
     return res.status(409).json({ message: 'User already exists' });
   }
@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // Create a new user
-  const newUser = await prisma.user.create({
+  const newUser = await prisma.users.create({
     data: {
       username,
       password: hashedPassword
