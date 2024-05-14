@@ -22,9 +22,9 @@ const NavBar = () => {
       <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
         <Text>Profile</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Login')}>
+      {/* <TouchableOpacity onPress={() => navigateToScreen('Login')}>
         <Text>Login</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
