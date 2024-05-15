@@ -23,6 +23,9 @@ const NavBar = () => {
       <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
         <Text style={navStyles.navText}>Profile</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen('Login')}>
+        <Text>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
