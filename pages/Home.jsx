@@ -5,7 +5,7 @@ import GetAllPosts from '../components/GetAllPosts';
 const Home = () => {
   return (
     <View>
-      <Text style={{textAlign: `center`}}>Welcome to Home Page!</Text>
+      <Text style={{textAlign: `center`, fontWeight: 'bold', marginBottom: 10}}>Welcome to Home Page!</Text>
       <GetAllPosts />
     </View>
   );
