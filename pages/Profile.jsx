@@ -1,13 +1,32 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
+  const navigation = useNavigation();
+  const navigateToScreen = (screenName) => {
+    navigation.navigate(screenName);
+  }
   return (
     <View>
-      <Text>Profile Page</Text>
-      {/* Add profile information or other profile-related components here */}
+      <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be     
+        <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
+        </TouchableOpacity>
+      </Text>
+      {/* this is where a get user details component would go so that we can display the users profile pic, bio, and posts. This componenet will have its own styling that will accompany the profile page */}
     </View>
   );
 };
+
+const settingsButton = StyleSheet.create ({
+  button:{
+    padding: 10,
+    backgroundColor: 'slategrey',
+    color: 'white',
+    borderRadius: 10,
+    borderWidth: 1
+  }
+})
 
 export default Profile;

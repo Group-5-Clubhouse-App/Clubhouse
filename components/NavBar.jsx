@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native-web';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, Text, View } from 'react-native';
 
@@ -9,21 +10,43 @@ const NavBar = () => {
   };
 
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 16 }}>
+    <View style={ navStyles.navBar }>
       <TouchableOpacity onPress={() => navigateToScreen('Home')}>
-        <Text>Home</Text>
+        <Text style={navStyles.navText}>Home</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateToScreen('Post')}>
-        <Text>Create Post</Text>
+        <Text style={navStyles.navText}>Create Post</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateToScreen('Notifications')}>
-        <Text>Notifications</Text>
+        <Text style={navStyles.navText}>Notifications</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
-        <Text>Profile</Text>
+        <Text style={navStyles.navText}>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen('Login')}>
+        <Text>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen('Register')}>
+        <Text>Register</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const navStyles = StyleSheet.create({
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 30,
+    backgroundColor: '#323232',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10
+  },
+  navText: {
+    color: 'white',
+  },
+});
 
 export default NavBar;
