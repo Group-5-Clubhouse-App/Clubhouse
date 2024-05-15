@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
+import GetAllNotificationPosts from '../components/GetAllNotificationPosts';
 
 const Notifications = () => {
   return (
+    <ScrollView>
     <View>
-      <Text>Notifications Page</Text>
-      {/* Add notification list or other notification-related components here */}
+      <GetAllNotificationPosts />
     </View>
+    </ScrollView>
   );
 };
 
