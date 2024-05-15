@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'stretch',
     justifyContent: 'center',
-    padding: 20,
+    padding: 10,
   },
 });
 
