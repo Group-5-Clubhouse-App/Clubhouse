@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const authRouter = require('./auth/index.cjs');
+const apiRouter = require('./api/index.cjs');
 const PORT = process.env.PORT || 8080;
 const cors = require("cors");
 
@@ -20,5 +21,7 @@ app.get("/", (req, res) => {
   res.send(`Hello welcome to the / route`);
 });
 app.use("/auth", authRouter);
+
+app.use("/api", apiRouter);
 
   
