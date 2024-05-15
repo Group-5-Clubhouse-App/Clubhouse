@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -16,17 +15,25 @@ import Register from './pages/Register';
 const Stack = createStackNavigator();
 const App = () => {
   return (
-
   <View style={styles.container}>
-  <NavigationContainer>
-   <Stack.Navigator>
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="Post" component={Post} />
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Register" component={Register} />
+  <NavigationContainer screenOptions={{backgroundColor: 'transparent'}}>
+   <Stack.Navigator
+   screenOptions={{
+    headerStyle: {
+      backgroundColor: '#272727'
+    },
+    headerTintColor: 'white',
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    }
+   }}>
+      <Stack.Screen name="Home" component={Home} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Settings" component={Settings} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Login" component={Login} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Notifications" component={Notifications} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Post" component={Post} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Profile" component={Profile} options={{cardStyle: styles.containerForScreens}}/>
+      <Stack.Screen name="Register" component={Register} options={{cardStyle: styles.containerForScreens}}/>
     </Stack.Navigator>
     <NavBar />
   </NavigationContainer>
@@ -37,10 +44,17 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#272727',
     alignItems: 'stretch',
     justifyContent: 'center',
-    padding: 20
+    paddingBottom: 40
+  },
+  containerForScreens: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    padding: 20,
   },
 });
 
