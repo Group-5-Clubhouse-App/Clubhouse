@@ -24,7 +24,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/auth/register', {
+      const response = await axios.post('https://clubhouse-6uml.onrender.com/auth/register', {
         username,
         password,
     });
@@ -36,6 +36,7 @@ const Register = () => {
     console.log('user', user);
 
     await AsyncStorage.setItem('token', token);
+    console.log(AsyncStorage.getItem('token'));
 
     Alert.alert('Registration successful!');
     navigation.navigate('Home');
