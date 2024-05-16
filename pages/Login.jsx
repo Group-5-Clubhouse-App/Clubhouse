@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/auth/login', {
+      const response = await axios.post(`https://clubhouse-6uml.onrender.com/auth/login`, {
         username,
         password,
       });
