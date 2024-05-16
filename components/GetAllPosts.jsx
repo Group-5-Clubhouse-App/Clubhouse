@@ -14,7 +14,6 @@ const GetAllPosts = () => {
           throw new Error('Network response was not okay');
         }
         const data = await response.json();
-        console.log(data);
         setPosts(data);
       } catch (error) {
         setError(error);
