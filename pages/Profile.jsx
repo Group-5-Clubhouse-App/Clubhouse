@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CheckToken from '../components/CheckToken';
+import Logout from '../components/Logout';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -11,7 +12,8 @@ const Profile = () => {
   return (
     <View>
       <CheckToken />
-      <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be     
+      <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be
+      <Text> <Logout /> </Text>
         <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
         </TouchableOpacity>

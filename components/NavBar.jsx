@@ -28,24 +28,6 @@ const NavBar = () => {
       <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
         <Text style={navStyles.navText}>Profile</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Login')}>
-        <Text>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Register')}>
-        <Text>Register</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={async () => {
-         try {
-         await AsyncStorage.setItem('token', '');
-         const token = await AsyncStorage.getItem('token');
-         console.log(token);
-         navigateToLogin('Login');
-         } catch (error) {
-         console.error('Error:', error);
-         }
-        }}>
-         <Text>Logout</Text>
-      </TouchableOpacity>
     </View>
   );
 };
