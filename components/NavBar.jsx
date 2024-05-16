@@ -2,12 +2,17 @@ import React from 'react';
 import { StyleSheet } from 'react-native-web';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NavBar = () => {
   const navigation = useNavigation();
   const navigateToScreen = (screenName) => {
     navigation.navigate(screenName);
   };
+  const navigateToLogin = (screenName) => {
+    navigation.replace(screenName);
+  };
+
 
   return (
     <View style={ navStyles.navBar }>
@@ -28,6 +33,18 @@ const NavBar = () => {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateToScreen('Register')}>
         <Text>Register</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={async () => {
+         try {
+         await AsyncStorage.setItem('token', '');
+         const token = await AsyncStorage.getItem('token');
+         console.log(token);
+         navigateToLogin('Login');
+         } catch (error) {
+         console.error('Error:', error);
+         }
+        }}>
+         <Text>Logout</Text>
       </TouchableOpacity>
     </View>
   );

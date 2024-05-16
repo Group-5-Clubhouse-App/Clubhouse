@@ -9,6 +9,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null); // Add error state to display errors
   const navigation = useNavigation();
+  const navigateToScreen = (screenName) => {
+    navigation.replace(screenName);
+  };
 
   const handleLogin = async () => {
     try {
@@ -16,8 +19,6 @@ const Login = () => {
         username,
         password,
       });
-
-      //console.log(response)
   
       const token = response.data.token
       const user = response.data.user
@@ -26,10 +27,9 @@ const Login = () => {
       console.log('user', user);
   
       await AsyncStorage.setItem('token', token);
-      // Store the token in the local storage or in a state variable
-      // and navigate to the home screen or perform any other action
+
       Alert.alert('Login successful');
-      navigation.navigate('Home');
+      navigateToScreen('Home');
     } catch (error) {
       console.error(error);
       Alert.alert('Login failed', error.response);
