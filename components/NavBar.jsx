@@ -1,36 +1,34 @@
-import React from 'react';
-import { StyleSheet } from 'react-native-web';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckToken from './CheckToken';
 
-const NavBar = () => {
+const NavBar = ({token}) => {
   const navigation = useNavigation();
-  const navigateToScreen = (screenName) => {
-    navigation.navigate(screenName);
-  };
-  const navigateToLogin = (screenName) => {
-    navigation.replace(screenName);
-  };
+  console.log(token)
 
-
-  return (
-    <View style={ navStyles.navBar }>
-      <TouchableOpacity onPress={() => navigateToScreen('Home')}>
-        <Text style={navStyles.navText}>Home</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Post')}>
-        <Text style={navStyles.navText}>Create Post</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Notifications')}>
-        <Text style={navStyles.navText}>Notifications</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigateToScreen('Profile')}>
-        <Text style={navStyles.navText}>Profile</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+  if (token) {
+    return (
+      <View style={navStyles.navBar}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Text style={navStyles.navText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Post')}>
+          <Text style={navStyles.navText}>Create Post</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+          <Text style={navStyles.navText}>Notifications</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Text style={navStyles.navText}>Profile</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return null;
+  }
+}
 
 const navStyles = StyleSheet.create({
   navBar: {

@@ -4,7 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-const Register = () => {
+const Register = ({setToken}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,7 +36,7 @@ const Register = () => {
     console.log('user', user);
 
     await AsyncStorage.setItem('token', token);
-    console.log(AsyncStorage.getItem('token'));
+    setToken(token)
 
     Alert.alert('Registration successful!');
     navigation.navigate('Home');

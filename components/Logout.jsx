@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Logout = () => {
+const Logout = ({setToken}) => {
   const navigation = useNavigation();
   const navigateToLogin = () => {
     navigation.reset({
@@ -16,6 +16,8 @@ return(
 <Button title="Logout" onPress={async () => {
   try {
     await AsyncStorage.setItem('token', '');
+    const newBlankToken = await AsyncStorage.getItem('token');
+    setToken(newBlankToken);
     navigateToLogin();
   } catch (error) {
     console.error('Error:', error);

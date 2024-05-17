@@ -4,16 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 import CheckToken from '../components/CheckToken';
 import Logout from '../components/Logout';
 
-const Profile = () => {
+const Profile = ({token, setToken}) => {
   const navigation = useNavigation();
   const navigateToScreen = (screenName) => {
     navigation.navigate(screenName);
   }
   return (
     <View>
-      <CheckToken />
+      <CheckToken token={token} setToken={setToken}/>
       <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be
-      <Text> <Logout /> </Text>
+      <Text> <Logout token={token} setToken={setToken}/> </Text>
         <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
         </TouchableOpacity>
