@@ -13,7 +13,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal server error' });
+  });
 
 app.listen(PORT, () => {
     console.log(`listening on Port ${PORT}`);
@@ -26,4 +29,3 @@ app.use("/auth", authRouter);
 
 app.use("/api", apiRouter);
 
-  

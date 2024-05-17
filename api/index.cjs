@@ -80,6 +80,27 @@ router.get('/post/:id', async (req, res) => {
   res.json(post);
 });
 
+// Get all posts by a specific user ID
+router.get('/posts/user/:userid', authenticateToken, async (req, res) => {
+    const { userid } = req.params;
+  
+    // Validate input
+    if (!userid) {
+      return res.status(400).send({ message: 'User ID is required' });
+    }
+  
+    // Retrieve all posts by the specified user ID
+    const posts = await prisma.posts.findMany({
+      where: {
+        userid: parseInt(userid)
+      },
+      include: {
+        user: true
+      }
+    });
+  
+    res.send(posts)
+  });
 
 
 // // Delete a post by ID
@@ -103,6 +124,5 @@ router.delete('/post/:id', authenticateToken, async (req, res) => {
   res.json({ message: 'Post deleted' });
 });
 
-//get all post by a specific users id 
 
 module.exports = router;
