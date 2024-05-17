@@ -3,10 +3,10 @@ import { View, Text } from 'react-native';
 import ChangeAccountDetails from '../components/ChangeAccountDetails';
 import CheckToken from '../components/CheckToken';
 
-const Settings = () => {
+const Settings = ({token, setToken}) => {
   return (
     <View>
-      <CheckToken />
+      <CheckToken token={token} setToken={setToken}/>
       <ChangeAccountDetails />
     </View>
   );

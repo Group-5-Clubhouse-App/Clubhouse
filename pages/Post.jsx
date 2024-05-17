@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import CheckToken from '../components/CheckToken';
 
-const Post = () => {
+const Post = ({token, setToken}) => {
   const [postText, setPostText] = useState('');
 
   const handlePost = async () => {
@@ -11,7 +11,7 @@ const Post = () => {
 
   return (
     <View style={postStyles.postCard}>
-      <CheckToken />
+      <CheckToken token={token} setToken={setToken}/>
       <Text style={{fontWeight: '600', fontSize: 20}}>Create a post</Text>
       <TextInput
         placeholder="Write a post..."

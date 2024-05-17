@@ -4,11 +4,12 @@ import axios from 'axios'; // Add axios for making API requests
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-const Login = () => {
+const Login = ({setToken}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null); // Add error state to display errors
   const navigation = useNavigation();
+
   const navigateToScreen = (screenName) => {
     navigation.replace(screenName);
   };
@@ -27,6 +28,7 @@ const Login = () => {
       console.log('user', user);
   
       await AsyncStorage.setItem('token', token);
+      setToken(token);
 
       Alert.alert('Login successful');
       navigateToScreen('Home');
