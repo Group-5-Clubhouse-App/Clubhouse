@@ -1,14 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
+const jwt = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
-// Verify JWT token
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
     return res.sendStatus(401);
@@ -23,106 +23,129 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-router.post('/post', authenticateToken, async (req, res) => {
-    const { description } = req.body;
-  
-    // Validate input
-    if (!description) {
-      return res.status(400).json({ message: 'Description is required' });
-    }
-  
-    try {
-      // Create a new post
-      const newPost = await prisma.posts.create({
-        data: {
-          description,
-          user: {
-            connect: {
-              id: req.user.userId
-            }
-          }
-        }
-      });
-  
-      res.status(201).json(newPost);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+router.get("/", (req, res) => {
+  res.send(`HELLO`);
+});
 
-// Get all posts
-router.get('/posts', async (req, res) => {
+router.post("/post", authenticateToken, async (req, res) => {
+  const { description } = req.body;
+
+  if (!description) {
+    return res.status(400).json({ message: "Description is required" });
+  }
+
+  try {
+    const newPost = await prisma.posts.create({
+      data: {
+        description,
+        user: {
+          connect: {
+            id: req.user.userId,
+          },
+        },
+      },
+    });
+
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
 
   res.json(posts);
 });
 
-// Get a single post by ID
-router.get('/post/:id', async (req, res) => {
+router.get("/post/:id", async (req, res) => {
   const post = await prisma.posts.findUnique({
     where: {
-      id: parseInt(req.params.id)
+      id: parseInt(req.params.id),
     },
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
 
   if (!post) {
-    return res.status(404).json({ message: 'Post not found' });
+    return res.status(404).json({ message: "Post not found" });
   }
 
   res.json(post);
 });
 
-// Get all posts by a specific user ID
-router.get('/posts/user/:userid', authenticateToken, async (req, res) => {
-    const { userid } = req.params;
-  
-    // Validate input
-    if (!userid) {
-      return res.status(400).send({ message: 'User ID is required' });
-    }
-  
-    // Retrieve all posts by the specified user ID
-    const posts = await prisma.posts.findMany({
-      where: {
-        userid: parseInt(userid)
-      },
-      include: {
-        user: true
-      }
-    });
-  
-    res.send(posts)
+router.get("/posts/user/:userid", authenticateToken, async (req, res) => {
+  const { userid } = req.params;
+
+  if (!userid) {
+    return res.status(400).send({ message: "User ID is required" });
+  }
+
+  const posts = await prisma.posts.findMany({
+    where: {
+      userid: parseInt(userid),
+    },
+    include: {
+      user: true,
+    },
   });
 
+  res.send(posts);
+});
 
-// // Delete a post by ID
-router.delete('/post/:id', authenticateToken, async (req, res) => {
+router.delete("/post/:id", authenticateToken, async (req, res) => {
   const post = await prisma.posts.findUnique({
     where: {
-      id: parseInt(req.params.id)
-    }
+      id: parseInt(req.params.id),
+    },
   });
   if (!post || post.userid !== req.user.userId) {
-    
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   await prisma.posts.delete({
     where: {
-      id: parseInt(req.params.id)
-    }
+      id: parseInt(req.params.id),
+    },
   });
 
-  res.json({ message: 'Post deleted' });
+  res.json({ message: "Post deleted" });
 });
 
+router.put("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { username, password, bio, profile_icon } = req.body;
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  try {
+    const userToEdit = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    const editUserInfo = await prisma.users.update({
+      where: {
+        id: userToEdit.id,
+      },
+      data: {
+        username,
+        password: hashedPassword,
+        bio,
+        profile_icon,
+      },
+    });
+    res.send(editUserInfo);
+  } catch (err) {
+    throw err;
+  }
+});
 
 module.exports = router;

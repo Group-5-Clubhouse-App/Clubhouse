@@ -7,7 +7,7 @@ const Settings = ({token, setToken}) => {
   return (
     <View>
       <CheckToken token={token} setToken={setToken}/>
-      <ChangeAccountDetails />
+      <ChangeAccountDetails token={token}/>
     </View>
   );
 };
