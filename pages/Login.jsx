@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
-import axios from 'axios'; // Add axios for making API requests
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 const Login = ({setToken}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // Add error state to display errors
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
   const navigateToScreen = (screenName) => {

@@ -1,13 +1,33 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
-const Post = () => {
+const ChangeAccountDetails = ({token}) => {
   const [usernameText, setUsernameText] = useState('');
   const [passwordText, setPasswordText] = useState('');
   const [bioText, setBioText] = useState('');
+  const [profileIconURLText, setProfileIconURLText] = useState('');
 
   const handleEditAccount = async () => {
-    // Add post logic here once post routes are made
+    const decodedToken = jwtDecode(token);
+    const userid = decodedToken.userId
+    console.log(userid)
+    try {
+      console.log(`We got here at least`)
+      const response = await axios.put(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
+        username: usernameText,
+        password: passwordText,
+        bio: bioText,
+        profile_icon: profileIconURLText
+      });
+
+      Alert.alert('Account edit successful');
+      navigateToScreen('Home');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Account edit not successful', error.response);
+    }
   };
   const handleDeleteAccount = async () => {
     // Add post logic here once post routes are made
@@ -41,6 +61,15 @@ const Post = () => {
         multiline={true}
         numberOfLines={10}
       />
+           
+      <TextInput
+        placeholder="Profile Icon URL"
+        value={profileIconURLText}
+        onChangeText={(text) => setProfileIconURLText(text)}
+        style={[settingsStyles.border, settingsStyles.bio]}
+        multiline={true}
+      />
+
       <Button title="Edit Account Details" onPress={handleEditAccount} />
     </View>
     <View style={settingsStyles.deleteAccount}>
@@ -91,4 +120,4 @@ const settingsStyles = StyleSheet.create({
   },
 });
 
-export default Post;
+export default ChangeAccountDetails;
