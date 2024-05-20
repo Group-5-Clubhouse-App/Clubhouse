@@ -8,7 +8,7 @@ const Notifications = ({token, setToken}) => {
     <ScrollView>
       <CheckToken token={token} setToken={setToken}/>
     <View>
-      <GetAllNotificationPosts />
+      <GetAllNotificationPosts token={token}/>
     </View>
     </ScrollView>
   );
