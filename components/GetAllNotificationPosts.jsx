@@ -1,19 +1,18 @@
 import { StyleSheet, Alert, View, Text } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const GetAllNotificationPosts = ({token}) => {
+  const [posts, setPosts] = useState([]);
   const decodedToken = jwtDecode(token);
   const userid = decodedToken.userId
-  console.log(userid)
   useEffect(() => {
     const getUserNotifications = async () => {
       try {
-        console.log(`We got here at least`);
         const response = await axios.get(`https://clubhouse-6uml.onrender.com/api/notifs/${userid}`);
-        
-        console.log(response.data);
+      
+        setPosts(response.data)
       } catch (error) {
         console.error(error);
         Alert.alert('Error getting notifications', error.response);
@@ -21,10 +20,17 @@ const GetAllNotificationPosts = ({token}) => {
     };
     getUserNotifications();
   }, [userid]);
-  
+
   return (
     <View>
       <Text style={styles.container}>This is where all the notification posts for this user will go</Text>
+      {posts.map((post, index) => (
+        <View key={index} style={styles.container}>
+          <Text>{post.userid}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 16, marginVertical: 4}}>{post.description}</Text>
+          <Text style={{fontSize: 10}}>{post.time_posted}</Text>
+        </View>
+      ))}
     </View>
   );
 };
