@@ -13,13 +13,13 @@ const Profile = ({token, setToken}) => {
   return (
     <View>
       <CheckToken token={token} setToken={setToken}/>
-      <GetAllUserPosts token={token}/>
       <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be
       <Text> <Logout token={token} setToken={setToken}/> </Text>
         <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
           <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
         </TouchableOpacity>
       </Text>
+      <GetAllUserPosts token={token}/>
       {/* this is where a get user details component would go so that we can display the users profile pic, bio, and posts. This componenet will have its own styling that will accompany the profile page */}
     </View>
   );
