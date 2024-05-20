@@ -56,4 +56,36 @@ router.post('/register', async (req, res) => {
 }
 });
 
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    next();
+  });
+};
+
+router.delete('/delete', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    await prisma.users.delete({
+      where: { 
+        id: userId,
+      }
+  });
+    res.status(200).json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error( 'Error deleting account:', error);
+    res.status(500).json({ message: 'Error deleting account', error: error.message});
+  }
+});
+
 module.exports = router;

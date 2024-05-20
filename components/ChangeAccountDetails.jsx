@@ -35,6 +35,20 @@ const ChangeAccountDetails = ({token}) => {
   };
   const handleDeleteAccount = async () => {
     // Add post logic here once post routes are made
+    try {
+      await axios.delete('http://localhost:8080/auth/delete', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Alert.alert('Account deleted successfully');
+
+      navigateToScreen('Login');
+    } catch(error) {
+      console.error('Error deleting account:', error);
+      Alert.alert(
+        'Account deletion not successful',
+        error.respons?.data?.message || error.message
+      );
+    }
   };
 
   return (
