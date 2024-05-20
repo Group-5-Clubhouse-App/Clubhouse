@@ -80,6 +80,31 @@ router.get("/post/:id", async (req, res) => {
   res.json(post);
 });
 
+router.get("/notifs/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await prisma.users.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const userPosts = await prisma.posts.findMany({
+    where: {
+      description: {
+        contains: user.username,
+      },
+    },
+  });
+  if (userPosts.length === 0) {
+    return res.send(`No notifications yet!`);
+  }
+
+  res.json(userPosts);
+});
+
 router.get("/posts/user/:userid", authenticateToken, async (req, res) => {
   const { userid } = req.params;
 
