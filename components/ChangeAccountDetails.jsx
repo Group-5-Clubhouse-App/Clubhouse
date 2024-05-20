@@ -33,11 +33,14 @@ const ChangeAccountDetails = ({token}) => {
       Alert.alert('Account edit not successful', error.response);
     }
   };
+
   const handleDeleteAccount = async () => {
     const decodedToken = jwtDecode(token);
-    const userid = decodedToken.userId
+    const userid = decodedToken.userId;
+  
     try {
       let passwordEntered = '';
+  
       Alert.prompt(
         'Confirm Delete Account',
         'Enter your password to delete your account:',
@@ -49,35 +52,37 @@ const ChangeAccountDetails = ({token}) => {
           },
           {
             text: 'OK',
-            onPress: (value) => {
+            onPress: async (value) => {
               passwordEntered = value;
               console.log('Entered Password:', passwordEntered);
+  
+              try {
+                const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
+                  password: passwordEntered
+                });
+                console.log('Response:', response);
+  
+                await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                Alert.alert('Account deleted successfully');
+                navigateToScreen('Login');
+              } catch(error) {
+                console.error('Error deleting account:', error);
+                Alert.alert(
+                  'Account deletion not successful',
+                  error.response?.data?.message || error.message
+                );
+              }
             },
           },
         ],
       );
-      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
-        password: passwordEntered
-      });
-      console.log(`MOCK TEXT USER`, response)
     } catch (error) {
-      throw error;
-    }
-    try {
-      await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      Alert.alert('Account deleted successfully');
-
-      navigateToScreen('Login');
-    } catch(error) {
-      console.error('Error deleting account:', error);
-      Alert.alert(
-        'Account deletion not successful',
-        error.respons?.data?.message || error.message
-      );
+      console.error('Error:', error);
     }
   };
+  
 
   return (
     <>
