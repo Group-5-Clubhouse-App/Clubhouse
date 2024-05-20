@@ -173,4 +173,26 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
+router.post("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  try {
+    const userToVerify = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    const passwordMatch = await bcrypt.compare(password, userToVerify.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    } else {
+      res.send(userToVerify);
+    }
+  } catch (err) {
+    throw err;
+  }
+});
+
 module.exports = router;

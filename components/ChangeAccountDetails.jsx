@@ -34,7 +34,35 @@ const ChangeAccountDetails = ({token}) => {
     }
   };
   const handleDeleteAccount = async () => {
-    // Add post logic here once post routes are made
+    const decodedToken = jwtDecode(token);
+    const userid = decodedToken.userId
+    try {
+      let passwordEntered = '';
+      Alert.prompt(
+        'Confirm Delete Account',
+        'Enter your password to delete your account:',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: (value) => {
+              passwordEntered = value;
+              console.log('Entered Password:', passwordEntered);
+            },
+          },
+        ],
+      );
+      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
+        password: passwordEntered
+      });
+      console.log(`MOCK TEXT USER`, response)
+    } catch (error) {
+      throw error;
+    }
     try {
       await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
         headers: { Authorization: `Bearer ${token}` },
