@@ -36,7 +36,7 @@ const ChangeAccountDetails = ({token}) => {
   const handleDeleteAccount = async () => {
     // Add post logic here once post routes are made
     try {
-      await axios.delete('http://localhost:8080/auth/delete', {
+      await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
         headers: { Authorization: `Bearer ${token}` },
       });
       Alert.alert('Account deleted successfully');

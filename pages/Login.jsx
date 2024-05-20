@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -38,6 +38,9 @@ const Login = ({setToken}) => {
     }
   };
 
+  const navigateToRegister = () => {
+    navigation.navigate('Register'); // Navigate to the Register screen
+  };
 
   return (
     <View style={{ padding: 16 }}>
@@ -57,6 +60,9 @@ const Login = ({setToken}) => {
       />
       {error && <Text style={{ color: 'red', marginBottom: 8 }}>{error}</Text>}
       <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity onPress={navigateToRegister} style={{ marginTop: 16 }}>
+        <Text style={{ fontSize: 16, color: 'blue' }}>Register</Text>
+      </TouchableOpacity>
     </View>
   );
 };
