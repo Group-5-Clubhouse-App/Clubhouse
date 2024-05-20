@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import CheckToken from '../components/CheckToken';
+import { createPost } from '../components/CreatePost';
 
 const Post = ({token, setToken}) => {
   const [postText, setPostText] = useState('');
 
   const handlePost = async () => {
     // Add post logic here once post routes are made
+    if (!postText.trim()) {
+      Alert.alert('Error', 'Post description is required');
+      return;
+    }
+    try {
+      const newPost = await createPost(postText, token);
+      Alert.alert('Success', 'Post created successfully');
+      setPostText('');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create post');
+    }
   };
 
   return (
