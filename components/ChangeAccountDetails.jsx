@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
@@ -8,6 +9,11 @@ const ChangeAccountDetails = ({token}) => {
   const [passwordText, setPasswordText] = useState('');
   const [bioText, setBioText] = useState('');
   const [profileIconURLText, setProfileIconURLText] = useState('');
+
+  const navigation = useNavigation();
+  const navigateToScreen = (screenName) => {
+    navigation.replace(screenName);
+  };
 
   const handleEditAccount = async () => {
     const decodedToken = jwtDecode(token);
