@@ -6,18 +6,19 @@ const GetAllUserPosts = ({token}) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userid, setUserid] = useState(null);
 
   useEffect(() => {
     const fetchUserPosts = async () => {
+      console.log(`we got here`)
       const decodedToken = jwtDecode(token)
-      const userid = decodedToken.userid
+      const userid = decodedToken.userId
+      console.log(userid)
+      console.log(token)
       if (!token) {
         setError(new Error('No token found'));
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(`https://clubhouse-6uml.onrender.com/api/posts/user/${userid}`, {
           method: 'GET',
@@ -25,13 +26,15 @@ const GetAllUserPosts = ({token}) => {
             'Content-Type': 'application/json',
           },
         });
-
+        console.log(response)
         if (!response.ok) {
           throw new Error('Network response was not okay');
         }
 
         const data = await response.json();
         console.log(data)
+        console.log(data)
+        setPosts(data)
       } catch (error) {
         setError(error);
       } finally {
@@ -41,27 +44,6 @@ const GetAllUserPosts = ({token}) => {
 
     fetchUserPosts();
   }, []);
-
-  useEffect(() => {
-    if (userid) {
-      const fetchPosts = async () => {
-        try {
-          const response = await fetch(`https://clubhouse-6uml.onrender.com/api/posts/${userid}`);
-          if (!response.ok) {
-            throw new Error('Network response was not okay');
-          }
-          const data = await response.json();
-          setPosts(data);
-        } catch (error) {
-          setError(error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchPosts();
-    }
-  }, [userid]);
 
   if (loading) {
     return <ActivityIndicator size={'large'} color='#OOOOff' />;

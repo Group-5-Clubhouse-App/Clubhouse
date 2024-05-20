@@ -105,7 +105,7 @@ router.get("/notifs/:id", async (req, res) => {
   res.json(userPosts);
 });
 
-router.get("/posts/user/:userid", authenticateToken, async (req, res) => {
+router.get("/posts/user/:userid", async (req, res) => {
   const { userid } = req.params;
 
   if (!userid) {
