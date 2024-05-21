@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Image, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl } from 'react-native';
 
 const GetAllPosts = ({ onRefresh }) => {
   const [posts, setPosts] = useState([]);
@@ -52,25 +52,23 @@ const GetAllPosts = ({ onRefresh }) => {
   }
 
   return (
-    <View style={styles.flatListContainer}>
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.post}>
-            <View style={styles.userInfo}>
-              <Image source={{ uri: item.user.profile_icon }} style={styles.profileIcon} />
-              <Text style={styles.username}>{item.user.username}</Text>
-            </View>
-            <Text style={styles.title}>{item.description}</Text>
-            <Text>{new Date(item.time_posted).toLocaleString()}</Text>
+    <ScrollView
+      style={styles.flatListContainer}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {posts.map((item) => (
+        <View key={item.id.toString()} style={styles.post}>
+          <View style={styles.userInfo}>
+            <Image source={{ uri: item.user.profile_icon }} style={styles.profileIcon} />
+            <Text style={styles.username}>{item.user.username}</Text>
           </View>
-        )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      />
-    </View>
+          <Text style={styles.title}>{item.description}</Text>
+          <Text>{new Date(item.time_posted).toLocaleString()}</Text>
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
