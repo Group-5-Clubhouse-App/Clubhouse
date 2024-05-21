@@ -174,6 +174,26 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
+router.get('/user/:id', async (req, res, next) => {
+  const {id} = req.params
+  console.log(id)
+   try {
+      const user = await prisma.users.findUnique({
+        where: {
+          id: parseInt(id)
+        }
+      });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 router.post("/users/:id", async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
@@ -195,5 +215,6 @@ router.post("/users/:id", async (req, res) => {
     throw err;
   }
 });
+
 
 module.exports = router;
