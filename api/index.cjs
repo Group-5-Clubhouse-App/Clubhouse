@@ -86,9 +86,6 @@ router.get("/notifs/:id", async (req, res) => {
     where: {
       id: parseInt(id),
     },
-    include: {
-      user: true,
-    },
   });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -99,6 +96,9 @@ router.get("/notifs/:id", async (req, res) => {
       description: {
         contains: user.username,
       },
+    },
+    include: {
+      user: true,
     },
   });
   console.log(`USER POSTS FROM API`, userPosts);
