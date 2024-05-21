@@ -98,11 +98,9 @@ router.get("/notifs/:id", async (req, res) => {
       },
     },
   });
-  if (userPosts.length === 0) {
-    return res.send(`No notifications yet!`);
-  }
+  console.log(`USER POSTS FROM API`, userPosts);
 
-  res.json(userPosts);
+  res.send(userPosts);
 });
 
 router.get("/posts/user/:userid", async (req, res) => {
