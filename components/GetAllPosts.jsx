@@ -14,7 +14,8 @@ const GetAllPosts = ({ onRefresh }) => {
         throw new Error('Network response was not okay');
       }
       const data = await response.json();
-      setPosts(data);
+      const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
+      setPosts(sortedPosts);
     } catch (error) {
       setError(error);
     } finally {
