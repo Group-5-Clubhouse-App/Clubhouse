@@ -2,20 +2,25 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import CheckToken from '../components/CheckToken';
 import { createPost } from '../components/CreatePost';
+import { useNavigation } from '@react-navigation/native';
 
 const Post = ({token, setToken}) => {
   const [postText, setPostText] = useState('');
+  const navigation = useNavigation();
 
   const handlePost = async () => {
-    // Add post logic here once post routes are made
     if (!postText.trim()) {
       Alert.alert('Error', 'Post description is required');
       return;
     }
     try {
-      const newPost = await createPost(postText, token);
-      Alert.alert('Success', 'Post created successfully');
-      setPostText('');
+      await createPost(postText, token);
+      Alert.alert('Success', 'Post created successfully', [
+        { text: 'OK', onPress: () => {
+          setPostText('');
+          navigation.navigate('Home'); 
+        }},
+      ]);
     } catch (error) {
       Alert.alert('Error', 'Failed to create post');
     }
