@@ -86,6 +86,9 @@ router.get("/notifs/:id", async (req, res) => {
     where: {
       id: parseInt(id),
     },
+    include: {
+      user: true,
+    },
   });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
