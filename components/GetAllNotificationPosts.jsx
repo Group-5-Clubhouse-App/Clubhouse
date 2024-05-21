@@ -22,8 +22,10 @@ const GetAllNotificationPosts = ({token}) => {
   }, [userid]);
 
   if (posts.length === 0) {
-    return <Text>No posts yet!</Text>
+    return <Text style={{textAlign: 'center', marginVertical: 300, fontWeight: 'bold', fontSize: 30}}>No notifications yet!</Text>
   }
+
+  console.log(`here are post details`, posts);
 
   return (
     <View>

@@ -54,7 +54,10 @@ const GetAllUserPosts = ({ token }) => {
   }, [handleDeletePost]);
 
   if (posts.length === 0) {
-    return <Text>No posts yet!</Text>
+    return (<View>
+      <Text style={{textAlign: 'center', marginTop: 220, fontWeight: 'bold', fontSize: 30}}>No posts yet!</Text>
+      <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 20,fontSize: 30}}>Try making some by hitting "Create Post" below!</Text>
+    </View>)
   }
 
   return (
