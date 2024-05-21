@@ -33,21 +33,53 @@ const ChangeAccountDetails = ({token}) => {
       Alert.alert('Account edit not successful', error.response);
     }
   };
-  const handleDeleteAccount = async () => {
-    // Add post logic here once post routes are made
-    try {
-      await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      Alert.alert('Account deleted successfully');
 
-      navigateToScreen('Login');
-    } catch(error) {
-      console.error('Error deleting account:', error);
-      Alert.alert(
-        'Account deletion not successful',
-        error.respons?.data?.message || error.message
+  const handleDeleteAccount = async () => {
+    const decodedToken = jwtDecode(token);
+    const userid = decodedToken.userId;
+  
+    try {
+      let passwordEntered = '';
+  
+      Alert.prompt(
+        'Confirm Delete Account',
+        'Enter your password to delete your account:',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: async (value) => {
+              passwordEntered = value;
+              console.log('Entered Password:', passwordEntered);
+  
+              try {
+                const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
+                  password: passwordEntered
+                });
+                console.log('Response:', response);
+  
+                await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                Alert.alert('Account deleted successfully');
+                navigateToScreen('Login');
+              } catch(error) {
+                console.error('Error deleting account:', error);
+                Alert.alert(
+                  'Account deletion not successful',
+                  error.response?.data?.message || error.message
+                );
+              }
+            },
+          },
+        ],
       );
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 

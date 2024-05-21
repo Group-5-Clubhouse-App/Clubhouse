@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import { ScrollView } from 'react-native-gesture-handler';
+import axios from 'axios';
+
 
 const GetAllUserPosts = ({ token }) => {
   const [posts, setPosts] = useState([]);
+
+  const handleDeletePost = async ({token, postid}) => {
+    console.log(`test`);
+    console.log(token);
+    console.log(postid);
+    try {
+      const response = await axios.delete(`https://clubhouse-6uml.onrender.com/api/post/${postid}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -23,28 +44,40 @@ const GetAllUserPosts = ({ token }) => {
           },
         });
         const data = await response.json();
-        setPosts(data);
+        const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
+        setPosts(sortedPosts);
       } catch (error) {
         throw error;
       }
     };
 
     fetchUserPosts();
-  }, []);
+  }, [handleDeletePost]);
 
   if (posts.length === 0) {
-    return <Text>No posts yet!</Text>
+    return (<View>
+      <Text style={{textAlign: 'center', marginTop: 220, fontWeight: 'bold', fontSize: 30}}>No posts yet!</Text>
+      <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 20,fontSize: 30}}>Try making some by hitting "Create Post" below!</Text>
+    </View>)
   }
 
   return (
-    <View>
+    <View style={{paddingBottom: 244}}>
       <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginVertical: 10}}>Here are your posts!</Text>
       <ScrollView>
       {posts.map((post, index) => (
         <View key={index} style={styles.container}>
-          <Text>{post.userid}</Text>
+            <View style={styles.userInfo}>
+            <Image source={
+             typeof post.user.profile_icon === 'string' && post.user.profile_icon.startsWith('http')
+             ? { uri: post.user.profile_icon }
+             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+             } style={styles.profileIcon} />
+            <Text style={styles.username}>{post.user.username}</Text>
+          </View>
           <Text style={{ fontWeight: 'bold', fontSize: 16, marginVertical: 4 }}>{post.description}</Text>
-          <Text style={{ fontSize: 10 }}>{post.time_posted}</Text>
+          <Text style={{ fontSize: 10 }}>{new Date(post.time_posted).toLocaleString()}</Text>
+          <Button onPress={() => handleDeletePost({ token, postid: post.id })} title="Delete Post"></Button>
         </View>
       ))}
       </ScrollView>
@@ -57,7 +90,19 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: 'slategrey'
+    borderColor: 'slategrey',
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  profileIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1
   },
 });
 export default GetAllUserPosts;

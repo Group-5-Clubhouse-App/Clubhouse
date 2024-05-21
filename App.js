@@ -1,29 +1,29 @@
 // App.js
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import NavBar from './components/NavBar';
-import Home from './pages/Home';
-import Settings from './pages/Settings';
-import Login from './pages/Login';
-import Notifications from './pages/Notifications';
-import Post from './pages/Post';
-import Profile from './pages/Profile';
-import Register from './pages/Register';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import NavBar from "./components/NavBar";
+import Home from "./pages/Home";
+import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import Notifications from "./pages/Notifications";
+import Post from "./pages/Post";
+import Profile from "./pages/Profile";
+import Register from "./pages/Register";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [token, setToken] = useState('');
-    useEffect(() => {
-      const getToken = async() =>{
-      const initialToken = await AsyncStorage.getItem('token')
+  const [token, setToken] = useState("");
+  useEffect(() => {
+    const getToken = async () => {
+      const initialToken = await AsyncStorage.getItem("token");
       setToken(initialToken);
-      }
-      getToken();
-    }, [token, setToken]);
+    };
+    getToken();
+  }, [token, setToken]);
 
   return (
     <View style={styles.container}>
@@ -31,54 +31,82 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#272727'
+              backgroundColor: "#272727",
             },
-            headerTintColor: 'white',
+            headerTintColor: "white",
             headerTitleStyle: {
-              fontWeight: 'bold'
+              fontWeight: "bold",
             },
-          }}>
-          <Stack.Screen name="Home" options={{ cardStyle: styles.containerForScreens }}>
-            {props => <Home {...props} token={token} setToken={setToken} />}
+          }}
+        >
+          <Stack.Screen
+            name="Home"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <Home {...props} token={token} setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen name="Settings" options={{ cardStyle: styles.containerForScreens }}>
-            {props => <Settings {...props} token={token} setToken={setToken} />}
+          <Stack.Screen
+            name="Settings"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => (
+              <Settings {...props} token={token} setToken={setToken} />
+            )}
           </Stack.Screen>
-          <Stack.Screen name="Login" options={{ cardStyle: styles.containerForScreens }}>
-            {props => <Login {...props} setToken={setToken} />}
+          <Stack.Screen
+            name="Login"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <Login {...props} setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen name="Notifications" options={{ cardStyle: styles.containerForScreens }}>
-          {props => <Notifications {...props} token={token} setToken={setToken} />}
+          <Stack.Screen
+            name="Notifications"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => (
+              <Notifications {...props} token={token} setToken={setToken} />
+            )}
           </Stack.Screen>
-          <Stack.Screen name="Post" options={{ cardStyle: styles.containerForScreens }}>
-          {props => <Post {...props} token={token} setToken={setToken} />}
+          <Stack.Screen
+            name="Post"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <Post {...props} token={token} setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen name="Profile" options={{ cardStyle: styles.containerForScreens }}>
-          {props => <Profile {...props} token={token} setToken={setToken} />}
+          <Stack.Screen
+            name="Profile"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => (
+              <Profile {...props} token={token} setToken={setToken} />
+            )}
           </Stack.Screen>
-          <Stack.Screen name="Register" options={{ cardStyle: styles.containerForScreens }}>
-          {props => <Register {...props} setToken={setToken} />}
+          <Stack.Screen
+            name="Register"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <Register {...props} setToken={setToken} />}
           </Stack.Screen>
         </Stack.Navigator>
-        <NavBar token={token}/>
+        <NavBar token={token} />
       </NavigationContainer>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#272727',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    paddingBottom: 40
+    backgroundColor: "#272727",
+    alignItems: "stretch",
+    justifyContent: "center",
+    paddingBottom: 40,
   },
   containerForScreens: {
     flex: 1,
-    backgroundColor: 'transparent',
-    alignItems: 'stretch',
-    justifyContent: 'center',
+    backgroundColor: "#EBEBEB",
+    alignItems: "stretch",
+    justifyContent: "center",
     padding: 10,
   },
 });

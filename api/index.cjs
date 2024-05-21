@@ -97,10 +97,11 @@ router.get("/notifs/:id", async (req, res) => {
         contains: user.username,
       },
     },
+    include: {
+      user: true,
+    },
   });
-  if (userPosts.length === 0) {
-    return res.send(`No notifications yet!`);
-  }
+  console.log(`USER POSTS FROM API`, userPosts);
 
   res.json(userPosts);
 });
@@ -121,7 +122,7 @@ router.get("/posts/user/:userid", async (req, res) => {
     },
   });
 
-  res.send(posts);
+  res.json(posts);
 });
 
 router.delete("/post/:id", authenticateToken, async (req, res) => {
@@ -192,5 +193,28 @@ router.get('/user/:id', async (req, res, next) => {
       next(error);
     }
   });
+
+router.post("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  try {
+    const userToVerify = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    const passwordMatch = await bcrypt.compare(password, userToVerify.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    } else {
+      res.send(userToVerify);
+    }
+  } catch (err) {
+    throw err;
+  }
+});
+
 
 module.exports = router;
