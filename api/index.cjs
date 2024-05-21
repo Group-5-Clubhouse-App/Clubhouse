@@ -86,9 +86,6 @@ router.get("/notifs/:id", async (req, res) => {
     where: {
       id: parseInt(id),
     },
-    include: {
-      user: true,
-    },
   });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -100,10 +97,13 @@ router.get("/notifs/:id", async (req, res) => {
         contains: user.username,
       },
     },
+    include: {
+      user: true,
+    },
   });
   console.log(`USER POSTS FROM API`, userPosts);
 
-  res.send(userPosts);
+  res.json(userPosts);
 });
 
 router.get("/posts/user/:userid", async (req, res) => {
@@ -122,7 +122,7 @@ router.get("/posts/user/:userid", async (req, res) => {
     },
   });
 
-  res.send(posts);
+  res.json(posts);
 });
 
 router.delete("/post/:id", authenticateToken, async (req, res) => {
