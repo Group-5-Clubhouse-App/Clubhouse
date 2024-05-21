@@ -103,7 +103,7 @@ router.get("/notifs/:id", async (req, res) => {
   });
   console.log(`USER POSTS FROM API`, userPosts);
 
-  res.send(userPosts);
+  res.json(userPosts);
 });
 
 router.get("/posts/user/:userid", async (req, res) => {
@@ -122,7 +122,7 @@ router.get("/posts/user/:userid", async (req, res) => {
     },
   });
 
-  res.send(posts);
+  res.json(posts);
 });
 
 router.delete("/post/:id", authenticateToken, async (req, res) => {
