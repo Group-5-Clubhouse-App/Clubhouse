@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import { ScrollView } from 'react-native-gesture-handler';
+import axios from 'axios';
+
 
 const GetAllUserPosts = ({ token }) => {
   const [posts, setPosts] = useState([]);
+
+  const handleDeletePost = async ({token, postid}) => {
+    console.log(`test`);
+    console.log(token);
+    console.log(postid);
+    try {
+      const response = await axios.delete(`https://clubhouse-6uml.onrender.com/api/post/${postid}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -30,7 +51,7 @@ const GetAllUserPosts = ({ token }) => {
     };
 
     fetchUserPosts();
-  }, []);
+  }, [handleDeletePost]);
 
   if (posts.length === 0) {
     return <Text>No posts yet!</Text>
@@ -45,6 +66,7 @@ const GetAllUserPosts = ({ token }) => {
           <Text>{post.userid}</Text>
           <Text style={{ fontWeight: 'bold', fontSize: 16, marginVertical: 4 }}>{post.description}</Text>
           <Text style={{ fontSize: 10 }}>{post.time_posted}</Text>
+          <Button onPress={() => handleDeletePost({ token, postid: post.id })} title="Delete Post"></Button>
         </View>
       ))}
       </ScrollView>

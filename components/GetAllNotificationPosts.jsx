@@ -2,6 +2,7 @@ import { StyleSheet, Alert, View, Text } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const GetAllNotificationPosts = ({token}) => {
   const [posts, setPosts] = useState([]);
@@ -11,7 +12,6 @@ const GetAllNotificationPosts = ({token}) => {
     const getUserNotifications = async () => {
       try {
         const response = await axios.get(`https://clubhouse-6uml.onrender.com/api/notifs/${userid}`);
-      
         setPosts(response.data)
       } catch (error) {
         console.error(error);
@@ -21,9 +21,14 @@ const GetAllNotificationPosts = ({token}) => {
     getUserNotifications();
   }, [userid]);
 
+  if (posts.length === 0) {
+    return <Text>No posts yet!</Text>
+  }
+
   return (
     <View>
       <Text style={styles.container}>This is where all the notification posts for this user will go</Text>
+      <ScrollView>
       {posts.map((post, index) => (
         <View key={index} style={styles.container}>
           <Text>{post.userid}</Text>
@@ -31,6 +36,7 @@ const GetAllNotificationPosts = ({token}) => {
           <Text style={{fontSize: 10}}>{post.time_posted}</Text>
         </View>
       ))}
+      </ScrollView>
     </View>
   );
 };
