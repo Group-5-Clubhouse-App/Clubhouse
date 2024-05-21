@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CheckToken from '../components/CheckToken';
-import Logout from '../components/Logout';
 import GetAllUserPosts from '../components/GetUserPost';
 import UserInfo from '../components/UserInfo';
 
@@ -14,15 +13,10 @@ const Profile = ({token, setToken}) => {
   return (
     <View>
       <CheckToken token={token} setToken={setToken}/>
+      <View>
         <UserInfo token={token}/>
-      <Text style={{textAlign: 'right'}}>This is where the rest of the profile page will be
-      <Text> <Logout token={token} setToken={setToken}/> </Text>
-        <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
-        </TouchableOpacity>
-      </Text>
+      </View>
       <GetAllUserPosts token={token}/>
-      {/* this is where a get user details component would go so that we can display the users profile pic, bio, and posts. This componenet will have its own styling that will accompany the profile page */}
     </View>
   );
 };
@@ -33,7 +27,9 @@ const settingsButton = StyleSheet.create ({
     backgroundColor: 'slategrey',
     color: 'white',
     borderRadius: 10,
-    borderWidth: 1
+    borderWidth: 1,
+    width: 80.2, 
+    marginLeft: 328
   }
 })
 
