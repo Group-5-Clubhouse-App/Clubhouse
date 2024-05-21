@@ -17,7 +17,7 @@ const UserInfo = ({token}) => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:8080/api/user/${userid}`);
+        const response = await fetch(`https://clubhouse-6uml.onrender.com/api/user/${userid}`);
         if (!response.ok) {
           throw new Error('Network response was not okay');
         }
