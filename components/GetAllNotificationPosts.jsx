@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, View, Text } from 'react-native';
+import { StyleSheet, Alert, View, Text, Image } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -12,7 +12,8 @@ const GetAllNotificationPosts = ({token}) => {
     const getUserNotifications = async () => {
       try {
         const response = await axios.get(`https://clubhouse-6uml.onrender.com/api/notifs/${userid}`);
-        setPosts(response.data)
+        const sortedPosts = response.data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
+        setPosts(sortedPosts)
       } catch (error) {
         console.error(error);
         Alert.alert('Error getting notifications', error.response);
@@ -25,17 +26,21 @@ const GetAllNotificationPosts = ({token}) => {
     return <Text style={{textAlign: 'center', marginVertical: 300, fontWeight: 'bold', fontSize: 30}}>No notifications yet!</Text>
   }
 
-  console.log(`here are post details`, posts);
-
   return (
     <View>
-      <Text style={styles.container}>This is where all the notification posts for this user will go</Text>
       <ScrollView>
       {posts.map((post, index) => (
         <View key={index} style={styles.container}>
-          <Text>{post.userid}</Text>
+          <View style={styles.userInfo}>
+            <Image source={
+             typeof post.user.profile_icon === 'string' && post.user.profile_icon.startsWith('http')
+             ? { uri: post.user.profile_icon }
+             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+             } style={styles.profileIcon} />
+            <Text style={styles.username}>{post.user.username}</Text>
+          </View>
           <Text style={{fontWeight: 'bold', fontSize: 16, marginVertical: 4}}>{post.description}</Text>
-          <Text style={{fontSize: 10}}>{post.time_posted}</Text>
+          <Text style={{fontSize: 10}}>{new Date(post.time_posted).toLocaleString()};</Text>
         </View>
       ))}
       </ScrollView>
@@ -49,6 +54,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: 'slategrey'
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  profileIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1
   },
 });
 
