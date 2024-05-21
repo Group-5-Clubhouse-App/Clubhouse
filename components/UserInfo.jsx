@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigation } from '@react-navigation/native';
 
 const UserInfo = ({token}) => {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
+  const navigateToScreen = (screenName) => {
+    navigation.navigate(screenName);
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,11 +26,8 @@ const UserInfo = ({token}) => {
         if (!response.ok) {
           throw new Error('Network response was not okay');
         }
-        console.log(response)
         const data = await response.json();
-        console.log(data)
         setUser([data]);
-        console.log(user)
       } catch (error) {
         setError(error);
       } finally {
@@ -60,8 +62,11 @@ const UserInfo = ({token}) => {
              : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
              } style={styles.profileIcon} />
             <Text style={styles.username}>{user.username}</Text>
+            <TouchableOpacity onPress={() => navigateToScreen('Settings')} style={settingsButton.button}>
+            <Text style={{color: 'white', fontWeight: 'bold'}}>Settings</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={{fontWeight: 'bold', fontSize: 16, marginVertical: 4}}>{user.bio}</Text>
+          <Text style={styles.bio}>{user.bio}</Text>
           </View>
       ))}
       </ScrollView>
@@ -73,7 +78,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#EBEBEB',
+    borderWidth: 1
   },
   flatListContainer: {
     flex: 1,
@@ -93,22 +99,38 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileIcon: {
-    width: 10,
-    height: 10,
+    width: 80,
+    height: 80,
     borderRadius: 25,
     marginRight: 10,
   },
   userInfo: {
     flex: 1,
+    flexDirection: 'row'
   },
   username: {
-    fontSize: 16,
+    fontSize: 30,
     fontWeight: 'bold',
+    marginTop: 20
   },
   bio: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
+    marginTop: 20
   },
 });
+
+const settingsButton = StyleSheet.create ({
+  button:{
+    padding: 10,
+    backgroundColor: 'slategrey',
+    color: 'white',
+    borderRadius: 10,
+    borderWidth: 1,
+    width: 80.2, 
+    height: 40,
+    marginLeft: 90
+  }
+})
 
 export default UserInfo;
