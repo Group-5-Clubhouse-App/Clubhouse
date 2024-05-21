@@ -14,7 +14,6 @@ const GetAllPosts = ({ onRefresh }) => {
         throw new Error('Network response was not okay');
       }
       const data = await response.json();
-      console.log(data);
       setPosts(data);
     } catch (error) {
       setError(error);
@@ -61,7 +60,11 @@ const GetAllPosts = ({ onRefresh }) => {
       {posts.map((item) => (
         <View key={item.id.toString()} style={styles.post}>
           <View style={styles.userInfo}>
-            <Image source={{ uri: item.user.profile_icon }} style={styles.profileIcon} />
+            <Image   source={
+             typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
+             ? { uri: item.user.profile_icon }
+             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+             } style={styles.profileIcon} />
             <Text style={styles.username}>{item.user.username}</Text>
           </View>
           <Text style={styles.title}>{item.description}</Text>
@@ -107,6 +110,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 10,
+    borderWidth: 1
   },
   username: {
     fontSize: 16,

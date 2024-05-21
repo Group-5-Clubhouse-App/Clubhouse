@@ -82,7 +82,6 @@ const ChangeAccountDetails = ({token}) => {
       console.error('Error:', error);
     }
   };
-  
 
   return (
     <>
