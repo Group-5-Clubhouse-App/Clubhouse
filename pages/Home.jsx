@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
 import GetAllPosts from '../components/GetAllPosts';
 import CheckToken from '../components/CheckToken';
 
-const Home = ({ token, setToken, userId }) => {
+const Home = ({ token, setToken, otherUserid, setOtherUserid }) => {
+
   const refreshPostsRef = useRef(null);
 
   const handleRefreshButtonPress = () => {
@@ -18,7 +19,7 @@ const Home = ({ token, setToken, userId }) => {
       <View>
         <Text style={styles.welcomeText}>Welcome to the Clubhouse!</Text>
         <Button title="Refresh Posts" onPress={handleRefreshButtonPress} />
-        <GetAllPosts onRefresh={(refreshFunction) => (refreshPostsRef.current = refreshFunction)} />
+        <GetAllPosts onRefresh={(refreshFunction) => (refreshPostsRef.current = refreshFunction)} token={token} setToken={setToken} otherUserid={otherUserid} setOtherUserid={setOtherUserid}/>
       </View>
     </ScrollView>
   );

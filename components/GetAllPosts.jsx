@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl, Button } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
-const GetAllPosts = ({ onRefresh }) => {
+const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [likedPosts, setLikedPosts] = useState([]);
+
+  const navigation = useNavigation();
 
   const fetchPosts = async () => {
     try {
@@ -33,6 +37,16 @@ const GetAllPosts = ({ onRefresh }) => {
   const handleRefresh = () => {
     setRefreshing(true);
     fetchPosts();
+  };
+
+  const handleVisitProfile = (userId) => {
+    setOtherUserid(userId);
+
+    if (userId) {
+      navigation.navigate('User Profile', { userid: userId });
+    } else {
+      console.log('User ID is not available');
+    }
   };
 
   useEffect(() => {
@@ -77,12 +91,16 @@ const GetAllPosts = ({ onRefresh }) => {
       {posts.map((item) => (
         <View key={item.id.toString()} style={styles.post}>
           <View style={styles.userInfo}>
-            <Image source={
-              typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
-                ? { uri: item.user.profile_icon }
-                : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
-            } style={styles.profileIcon} />
-            <Text style={styles.username}>{item.user.username}</Text>
+            <Image   source={
+             typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
+             ? { uri: item.user.profile_icon }
+             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+             } style={styles.profileIcon} />
+              <TouchableOpacity
+              onPress={() => handleVisitProfile(item.user.id)}
+              >
+              <Text style={styles.username}>{item.user.username}</Text>
+              </TouchableOpacity>
           </View>
 
           <Text style={styles.title}>{item.description}</Text>

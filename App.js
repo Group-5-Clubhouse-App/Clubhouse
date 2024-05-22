@@ -13,11 +13,13 @@ import Register from "./pages/Register";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DirectMessages from "./pages/DirectMessages";
 import Chat from "./pages/Chat";
+import UserProfile from "./pages/UserProfile";
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [token, setToken] = useState("");
+  const [otherUserid, setOtherUserid] = useState("");
   useEffect(() => {
     const getToken = async () => {
       const initialToken = await AsyncStorage.getItem("token");
@@ -44,7 +46,15 @@ const App = () => {
             name="Home"
             options={{ cardStyle: styles.containerForScreens }}
           >
-            {(props) => <Home {...props} token={token} setToken={setToken} />}
+            {(props) => (
+              <Home
+                {...props}
+                token={token}
+                setToken={setToken}
+                otherUserid={otherUserid}
+                setOtherUserid={setOtherUserid}
+              />
+            )}
           </Stack.Screen>
           <Stack.Screen
             name="Settings"
@@ -65,7 +75,13 @@ const App = () => {
             options={{ cardStyle: styles.containerForScreens }}
           >
             {(props) => (
-              <Notifications {...props} token={token} setToken={setToken} />
+              <Notifications
+                {...props}
+                token={token}
+                setToken={setToken}
+                otherUserid={otherUserid}
+                setOtherUserid={setOtherUserid}
+              />
             )}
           </Stack.Screen>
           <Stack.Screen
@@ -99,6 +115,19 @@ const App = () => {
             options={{ cardStyle: styles.containerForScreens }}
           >
             {(props) => <Chat {...props} setToken={setToken} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="User Profile"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => (
+              <UserProfile
+                {...props}
+                setToken={setToken}
+                otherUserid={otherUserid}
+                setOtherUserid={setOtherUserid}
+              />
+            )}
           </Stack.Screen>
         </Stack.Navigator>
         <NavBar token={token} />
