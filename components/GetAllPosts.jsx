@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl, Button } from 'react-native';
 
 const GetAllPosts = ({ onRefresh }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   const fetchPosts = async () => {
     try {
@@ -15,7 +16,8 @@ const GetAllPosts = ({ onRefresh }) => {
       }
       const data = await response.json();
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
-      setPosts(sortedPosts);
+      const postsWithLikes = sortedPosts.map(post => ({ ...post, likes: post.likes || 0 }));
+      setPosts(postsWithLikes);
     } catch (error) {
       setError(error);
     } finally {
@@ -51,6 +53,20 @@ const GetAllPosts = ({ onRefresh }) => {
     );
   }
 
+  const handleLike = (postId) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId ? { ...post, likes: likedPosts.includes(postId) ? post.likes - 1 : post.likes + 1 } : post
+      )
+    );
+
+    if (likedPosts.includes(postId)) {
+      setLikedPosts(likedPosts.filter(id => id !== postId));
+    } else {
+      setLikedPosts([...likedPosts, postId]);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.flatListContainer}
@@ -61,15 +77,23 @@ const GetAllPosts = ({ onRefresh }) => {
       {posts.map((item) => (
         <View key={item.id.toString()} style={styles.post}>
           <View style={styles.userInfo}>
-            <Image   source={
-             typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
-             ? { uri: item.user.profile_icon }
-             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
-             } style={styles.profileIcon} />
+            <Image source={
+              typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
+                ? { uri: item.user.profile_icon }
+                : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+            } style={styles.profileIcon} />
             <Text style={styles.username}>{item.user.username}</Text>
           </View>
+
           <Text style={styles.title}>{item.description}</Text>
           <Text>{new Date(item.time_posted).toLocaleString()}</Text>
+          <View style={styles.likeContainer}>
+            <Button
+              title={`Like (${item.likes})`}
+              onPress={() => handleLike(item.id)}
+              color={likedPosts.includes(item.id) ? 'red' : 'blue'} // Change color if liked
+            />
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -121,6 +145,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  likeContainer: {
+    marginTop: 10,
   },
 });
 

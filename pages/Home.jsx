@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
 import GetAllPosts from '../components/GetAllPosts';
 import CheckToken from '../components/CheckToken';
 
-const Home = ({ token, setToken }) => {
+const Home = ({ token, setToken, userId }) => {
   const refreshPostsRef = useRef(null);
 
   const handleRefreshButtonPress = () => {
