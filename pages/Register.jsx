@@ -9,10 +9,15 @@ const Register = ({setToken}) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigation = useNavigation();
+  const navigateToHome = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
+  };
 
 
   const handleRegister = async () => {
-    // Add register logic here
     if (!username || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
@@ -30,16 +35,12 @@ const Register = ({setToken}) => {
     });
 
     const token = response.data.token;
-    const user = response.data.user;
-
-    console.log('token', token);
-    console.log('user', user);
 
     await AsyncStorage.setItem('token', token);
     setToken(token)
 
-    Alert.alert('Registration successful!');
-    navigation.navigate('Home');
+    Alert.alert('Registration successful! Welcome to the Clubhouse');
+    navigateToHome();
     } catch (error) {
       console.error(error);
         Alert.alert('Registration failed!')

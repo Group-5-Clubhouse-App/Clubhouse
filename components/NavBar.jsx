@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckToken from './CheckToken';
 
 const NavBar = ({token}) => {
   const navigation = useNavigation();
@@ -16,7 +14,7 @@ const NavBar = ({token}) => {
         <TouchableOpacity onPress={() => navigation.navigate('Post')}>
           <Text style={navStyles.navText}>Create Post</Text>
         </TouchableOpacity>
-        <Image source={require('../imgs/capture.png')} style={{height: 60, width: 60}} />
+        <Image source={require('../imgs/capture.png')} style={{height: 80, width: 80}} />
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Text style={navStyles.navText}>Notifications</Text>
         </TouchableOpacity>
@@ -34,7 +32,7 @@ const navStyles = StyleSheet.create({
   navBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 20,
+    paddingVertical: 10,
     backgroundColor: '#272727',
     borderWidth: 1,
     borderColor: 'white',
@@ -43,7 +41,7 @@ const navStyles = StyleSheet.create({
   },
   navText: {
     color: 'white',
-    marginTop: 20,
+    marginTop: 30,
     fontWeight: 'bold'
   },
 });

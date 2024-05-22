@@ -16,7 +16,7 @@ const Home = ({ token, setToken }) => {
     <ScrollView>
       <CheckToken token={token} setToken={setToken} />
       <View>
-        <Text style={styles.welcomeText}>Welcome to Home Page!</Text>
+        <Text style={styles.welcomeText}>Welcome to the Clubhouse!</Text>
         <Button title="Refresh Posts" onPress={handleRefreshButtonPress} />
         <GetAllPosts onRefresh={(refreshFunction) => (refreshPostsRef.current = refreshFunction)} />
       </View>
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     textAlign: 'center',
     fontWeight: 'bold',
+    fontSize: 20,
     marginBottom: 10,
   },
 });
