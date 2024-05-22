@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -12,6 +11,8 @@ import Post from "./pages/Post";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DirectMessages from "./pages/DirectMessages";
+import Chat from "./pages/Chat";
 
 const Stack = createStackNavigator();
 
@@ -86,6 +87,18 @@ const App = () => {
             options={{ cardStyle: styles.containerForScreens }}
           >
             {(props) => <Register {...props} setToken={setToken} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="Direct Messages"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <DirectMessages {...props} setToken={setToken} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="Chat"
+            options={{ cardStyle: styles.containerForScreens }}
+          >
+            {(props) => <Chat {...props} setToken={setToken} />}
           </Stack.Screen>
         </Stack.Navigator>
         <NavBar token={token} />
