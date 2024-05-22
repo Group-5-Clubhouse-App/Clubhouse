@@ -4,6 +4,7 @@ import GetAllPosts from '../components/GetAllPosts';
 import CheckToken from '../components/CheckToken';
 
 const Home = ({ token, setToken, otherUserid, setOtherUserid }) => {
+
   const refreshPostsRef = useRef(null);
 
   const handleRefreshButtonPress = () => {

@@ -8,6 +8,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   const navigation = useNavigation();
 
@@ -19,7 +20,8 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       }
       const data = await response.json();
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
-      setPosts(sortedPosts);
+      const postsWithLikes = sortedPosts.map(post => ({ ...post, likes: post.likes || 0 }));
+      setPosts(postsWithLikes);
     } catch (error) {
       setError(error);
     } finally {
@@ -65,6 +67,20 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
     );
   }
 
+  const handleLike = (postId) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId ? { ...post, likes: likedPosts.includes(postId) ? post.likes - 1 : post.likes + 1 } : post
+      )
+    );
+
+    if (likedPosts.includes(postId)) {
+      setLikedPosts(likedPosts.filter(id => id !== postId));
+    } else {
+      setLikedPosts([...likedPosts, postId]);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.flatListContainer}
@@ -86,8 +102,16 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
               <Text style={styles.username}>{item.user.username}</Text>
               </TouchableOpacity>
           </View>
+
           <Text style={styles.title}>{item.description}</Text>
           <Text>{new Date(item.time_posted).toLocaleString()}</Text>
+          <View style={styles.likeContainer}>
+            <Button
+              title={`Like (${item.likes})`}
+              onPress={() => handleLike(item.id)}
+              color={likedPosts.includes(item.id) ? 'red' : 'blue'} // Change color if liked
+            />
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -139,6 +163,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  likeContainer: {
+    marginTop: 10,
   },
 });
 
