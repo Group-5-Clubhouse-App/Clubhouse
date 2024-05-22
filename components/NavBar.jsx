@@ -9,12 +9,14 @@ const NavBar = ({token}) => {
     return (
       <View style={navStyles.navBar}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text style={navStyles.navText}>Home</Text>
+          <Image source={require('../imgs/capture.png')} style={{height: 80, width: 80}} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Direct Messages')}>
+          <Text style={navStyles.navText}>DM's</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Post')}>
           <Text style={navStyles.navText}>Create Post</Text>
         </TouchableOpacity>
-        <Image source={require('../imgs/capture.png')} style={{height: 80, width: 80}} />
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Text style={navStyles.navText}>Notifications</Text>
         </TouchableOpacity>
