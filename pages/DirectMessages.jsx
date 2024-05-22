@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CheckToken from '../components/CheckToken';
+import UserSearchBar from '../components/UserSearchBar';
 
 const DirectMessages = ({ token, setToken }) => {
 
@@ -9,6 +10,7 @@ const DirectMessages = ({ token, setToken }) => {
       <CheckToken token={token} setToken={setToken} />
       <View>
         <Text style={styles.welcomeText}>Welcome to the DM's page</Text>
+        <UserSearchBar />
       </View>
     </ScrollView>
   );
