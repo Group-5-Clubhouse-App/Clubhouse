@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   post: {
-    marginBottom: 20,
+    marginBottom: 1,
     padding: 20,
     borderRadius: 4,
     borderWidth: 2,

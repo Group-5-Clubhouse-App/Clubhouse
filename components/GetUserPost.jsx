@@ -59,7 +59,7 @@ const GetAllUserPosts = ({ token }) => {
   }
 
   return (
-    <View style={{paddingBottom: 244}}>
+    <View style={{paddingBottom: 480}}>
       <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginVertical: 10}}>Here are your posts!</Text>
       <ScrollView>
       {posts.map((post, index) => (

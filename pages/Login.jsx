@@ -22,15 +22,11 @@ const Login = ({setToken}) => {
       });
   
       const token = response.data.token
-      const user = response.data.user
-
-      console.log('token', token);
-      console.log('user', user);
   
       await AsyncStorage.setItem('token', token);
       setToken(token);
 
-      Alert.alert('Login successful');
+      Alert.alert('Login successful, welcome back to the Clubhouse');
       navigateToScreen('Home');
     } catch (error) {
       console.error(error);
@@ -39,7 +35,7 @@ const Login = ({setToken}) => {
   };
 
   const navigateToRegister = () => {
-    navigation.navigate('Register'); // Navigate to the Register screen
+    navigation.navigate('Register');
   };
 
   return (
@@ -61,7 +57,7 @@ const Login = ({setToken}) => {
       {error && <Text style={{ color: 'red', marginBottom: 8 }}>{error}</Text>}
       <Button title="Login" onPress={handleLogin} />
       <TouchableOpacity onPress={navigateToRegister} style={{ marginTop: 16 }}>
-        <Text style={{ fontSize: 16, color: 'blue' }}>Register</Text>
+        <Text style={{ fontSize: 18, color: 'blue', textAlign:'center' }}>Register</Text>
       </TouchableOpacity>
     </View>
   );

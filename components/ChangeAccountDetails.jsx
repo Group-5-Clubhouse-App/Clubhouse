@@ -3,8 +3,9 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ChangeAccountDetails = ({token}) => {
+const ChangeAccountDetails = ({token, setToken}) => {
   const [usernameText, setUsernameText] = useState('');
   const [passwordText, setPasswordText] = useState('');
   const [bioText, setBioText] = useState('');
@@ -13,6 +14,13 @@ const ChangeAccountDetails = ({token}) => {
   const navigation = useNavigation();
   const navigateToScreen = (screenName) => {
     navigation.replace(screenName);
+  };
+
+  const navigateToLogin = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   const handleEditAccount = async () => {
@@ -54,19 +62,20 @@ const ChangeAccountDetails = ({token}) => {
             text: 'OK',
             onPress: async (value) => {
               passwordEntered = value;
-              console.log('Entered Password:', passwordEntered);
   
               try {
                 const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/users/${userid}`, {
                   password: passwordEntered
                 });
-                console.log('Response:', response);
   
                 await axios.delete('https://clubhouse-6uml.onrender.com/auth/delete', {
                   headers: { Authorization: `Bearer ${token}` },
                 });
                 Alert.alert('Account deleted successfully');
-                navigateToScreen('Login');
+                await AsyncStorage.setItem('token', '');
+                const newBlankToken = await AsyncStorage.getItem('token');
+                setToken(newBlankToken);
+                navigateToLogin();
               } catch(error) {
                 console.error('Error deleting account:', error);
                 Alert.alert(
