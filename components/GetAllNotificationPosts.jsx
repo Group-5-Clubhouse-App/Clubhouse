@@ -1,13 +1,15 @@
-import { StyleSheet, Alert, View, Text, Image } from 'react-native';
+import { StyleSheet, Alert, View, Text, Image, TouchableOpacity } from 'react-native';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
-const GetAllNotificationPosts = ({token}) => {
+const GetAllNotificationPosts = ({token, otherUserid, setOtherUserid}) => {
   const [posts, setPosts] = useState([]);
   const decodedToken = jwtDecode(token);
   const userid = decodedToken.userId
+  const navigation = useNavigation();
   useEffect(() => {
     const getUserNotifications = async () => {
       try {
@@ -25,6 +27,15 @@ const GetAllNotificationPosts = ({token}) => {
   if (posts.length === 0) {
     return <Text style={{textAlign: 'center', marginVertical: 300, fontWeight: 'bold', fontSize: 30}}>No notifications yet!</Text>
   }
+  const handleVisitProfile = (userId) => {
+    setOtherUserid(userId);
+
+    if (userId) {
+      navigation.navigate('User Profile', { userid: userId });
+    } else {
+      console.log('User ID is not available');
+    }
+  };
 
   return (
     <View>
@@ -37,7 +48,11 @@ const GetAllNotificationPosts = ({token}) => {
              ? { uri: post.user.profile_icon }
              : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
              } style={styles.profileIcon} />
-            <Text style={styles.username}>{post.user.username}</Text>
+            <TouchableOpacity
+              onPress={() => handleVisitProfile(post.user.id)}
+              >
+              <Text style={styles.username}>{post.user.username}</Text>
+              </TouchableOpacity>
           </View>
           <Text style={{fontWeight: 'bold', fontSize: 16, marginVertical: 4}}>{post.description}</Text>
           <Text style={{fontSize: 10}}>{new Date(post.time_posted).toLocaleString()};</Text>
