@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl, Button } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }) => {
   const [posts, setPosts] = useState([]);
@@ -14,7 +15,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('https://clubhouse-6uml.onrender.com/api/posts');
+      const response = await fetch('http://localhost:8080/api/posts');
       if (!response.ok) {
         throw new Error('Network response was not okay');
       }
@@ -22,10 +23,10 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
       setPosts(sortedPosts);
 
-      const userLikedPosts = sortedPosts
-        .filter(post => post.liked_by.some(like => like.user.id === userId))
-        .map(post => post.id);
-      setLikedPosts(userLikedPosts);
+      // const userLikedPosts = sortedPosts
+      //   .filter(post => post.liked_by.some(like => like.user.id === userId))
+      //   .map(post => post.id);
+      // setLikedPosts(userLikedPosts);
     } catch (error) {
       setError(error);
     } finally {
@@ -59,16 +60,13 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
     }
   }, [onRefresh]);
 
-  const handleLike = async (postId) => {
+  const handleLike = async (postId, userId) => {
+    parseInt(postId);
     try {
-      const response = await fetch(`http://localhost:8080/api/posts/${postId}/like`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+      const response = await axios.post(`http://localhost:8080/api/posts/${postId}/like`, {
+        userId
       });
-      const data = await response.json();
+      const data = response.data;
       setPosts(prevPosts =>
         prevPosts.map(post =>
           post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
@@ -124,8 +122,8 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
           <View style={styles.likeContainer}>
             <Button
               title={`Like (${item.like_count})`}
-              onPress={() => handleLike(item.id)}
-              color={likedPosts.includes(item.id) ? 'red' : 'blue'} // Change color if liked
+              onPress={() => handleLike(item.id, item.user.id)}
+            // Change color if liked
             />
           </View>
         </View>
