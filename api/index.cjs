@@ -59,7 +59,7 @@ router.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     include: {
       user: true,
-      liked_by: true
+      //liked_by: true
     },
   });
 
