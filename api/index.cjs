@@ -3,8 +3,10 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-
+const dmRouter = require("./dms.cjs")
 const prisma = new PrismaClient();
+
+router.use("/dm", dmRouter);
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -295,4 +297,6 @@ router.post('/api/posts/:postId/Like', async (req, res) => {
   }
 });
 
+
 module.exports = router;
+
