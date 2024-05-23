@@ -57,7 +57,9 @@ router.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     include: {
       user: true,
+      liked_by: true
     },
+    orderBy: { time_posted: 'desc' }
   });
 
   res.json(posts);
@@ -216,14 +218,53 @@ router.post("/users/:id", async (req, res) => {
   }
 });
 
-// router.post('/api/posts/:postId/Like', async (req, res) => {
-//   const { postId } = req.params;
-//   const { userId } = req.body;
+router.post('/api/posts/:postId/Like', async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.userId;
 
-//   try {
-//     const post = await
-//   }
-// })
+  try {
+    const existingLike = await prisma.likes.findUnique({
+      where: {
+        userid_postid: {
+          userid: userId,
+          postid: parseInt(postId)
+        }
+      }
+    });
+
+    let updatedPost;
+    if (existingLike) {
+      await prisma.likes.delete({
+        where: {
+          id: existingLike.id
+        }
+      });
+      updatedPost = await prisma.posts.update({
+        where: { id: parseInt(postId) },
+        data: {
+          like_count: { decrement: 1 }
+        }
+      });
+    } else {
+      await prisma.likes.create({
+        data: {
+          user: { connect: { id: userId } },
+          post: { connect: { id: parseInt(postId) } }
+        }
+      });
+      updatedPost = await prisma.posts.update({
+        where: { id: parseInt(postId) },
+        data: {
+          like_count: { increment: 1 }
+        }
+      });
+    }
+
+    res.json({ like_count: updatedPost.like_count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 module.exports = router;
