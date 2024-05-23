@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, RefreshControl, Button } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
-const GetAllPosts = ({ onRefresh }) => {
+const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
+
+  const navigation = useNavigation();
 
   const fetchPosts = async () => {
     try {
@@ -16,6 +21,11 @@ const GetAllPosts = ({ onRefresh }) => {
       const data = await response.json();
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
       setPosts(sortedPosts);
+
+      const userLikedPosts = sortedPosts
+        .filter(post => post.liked_by.some(like => like.user.id === userId))
+        .map(post => post.id);
+      setLikedPosts(userLikedPosts);
     } catch (error) {
       setError(error);
     } finally {
@@ -33,11 +43,45 @@ const GetAllPosts = ({ onRefresh }) => {
     fetchPosts();
   };
 
+  const handleVisitProfile = (userId) => {
+    setOtherUserid(userId);
+
+    if (userId) {
+      navigation.navigate('User Profile', { userid: userId });
+    } else {
+      console.log('User ID is not available');
+    }
+  };
+
   useEffect(() => {
     if (onRefresh) {
       onRefresh(handleRefresh);
     }
   }, [onRefresh]);
+
+  const handleLike = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      const data = await response.json();
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
+        )
+      );
+
+      setLikedPosts(prevLikedPosts =>
+        prevLikedPosts.includes(postId) ? prevLikedPosts.filter(id => id !== postId) : [...prevLikedPosts, postId]
+      );
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
 
   if (loading) {
     return <ActivityIndicator size={'large'} color='#OOOOff' />;
@@ -51,6 +95,7 @@ const GetAllPosts = ({ onRefresh }) => {
     );
   }
 
+
   return (
     <ScrollView
       style={styles.flatListContainer}
@@ -61,15 +106,28 @@ const GetAllPosts = ({ onRefresh }) => {
       {posts.map((item) => (
         <View key={item.id.toString()} style={styles.post}>
           <View style={styles.userInfo}>
-            <Image   source={
-             typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
-             ? { uri: item.user.profile_icon }
-             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
-             } style={styles.profileIcon} />
-            <Text style={styles.username}>{item.user.username}</Text>
+            <Image
+              source={
+                typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
+                  ? { uri: item.user.profile_icon }
+                  : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+              }
+              style={styles.profileIcon}
+            />
+            <TouchableOpacity onPress={() => handleVisitProfile(item.user.id)}>
+              <Text style={styles.username}>{item.user.username}</Text>
+            </TouchableOpacity>
           </View>
+
           <Text style={styles.title}>{item.description}</Text>
           <Text>{new Date(item.time_posted).toLocaleString()}</Text>
+          <View style={styles.likeContainer}>
+            <Button
+              title={`Like (${item.like_count})`}
+              onPress={() => handleLike(item.id)}
+              color={likedPosts.includes(item.id) ? 'red' : 'blue'} // Change color if liked
+            />
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -121,6 +179,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  likeContainer: {
+    marginTop: 10,
   },
 });
 

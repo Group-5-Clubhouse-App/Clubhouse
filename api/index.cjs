@@ -60,6 +60,7 @@ router.get("/posts", async (req, res) => {
     include: {
       user: true,
     },
+    orderBy: { time_posted: 'desc' }
   });
 
   res.json(posts);
@@ -176,25 +177,50 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-router.get('/user/:id', async (req, res, next) => {
-  const {id} = req.params
-  console.log(id)
-   try {
-      const user = await prisma.users.findUnique({
-        where: {
-          id: parseInt(id)
-        }
-      });
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      res.json(user);
-    } catch (error) {
-      next(error);
+router.get("/user/:id", async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const user = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/search/user/:username", async (req, res, next) => {
+  const { username } = req.params;
+  console.log(username);
+  try {
+    const user = await prisma.users.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+        username: true,
+        profile_icon: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/users/:id", async (req, res) => {
   const { id } = req.params;
@@ -218,7 +244,59 @@ router.post("/users/:id", async (req, res) => {
   }
 });
 
+router.post('/api/posts/:postId/Like', async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.userId;
 
+  try {
+    const existingLike = await prisma.likes.findUnique({
+      where: {
+        userid_postid: {
+          userid: userId,
+          postid: parseInt(postId)
+        }
+      }
+    });
+
+    let updatedPost;
+    if (existingLike) {
+      await prisma.likes.delete({
+        where: {
+          id: existingLike.id
+        }
+      });
+      updatedPost = await prisma.posts.update({
+        where: { id: parseInt(postId) },
+        data: {
+          like_count: { decrement: 1 }
+        }
+      });
+    } else {
+      await prisma.likes.create({
+        data: {
+          user: { connect: { id: userId } },
+          post: { connect: { id: parseInt(postId) } }
+        }
+      });
+      updatedPost = await prisma.posts.update({
+        where: { id: parseInt(postId) },
+        data: {
+          like_count: { increment: 1 }
+        }
+      });
+    }
+
+    const updatedLikes = await prisma.likes.findMany({
+      where: { postid: parseInt(postId) },
+      include: { user: true }
+    })
+
+    res.json({ like_count: updatedPost.like_count, liked_by: updatedLikes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 module.exports = router;
+
