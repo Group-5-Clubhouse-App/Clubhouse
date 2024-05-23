@@ -15,7 +15,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/posts');
+      const response = await fetch('https://clubhouse-6uml.onrender.com/api/posts');
       if (!response.ok) {
         throw new Error('Network response was not okay');
       }
@@ -63,7 +63,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
   const handleLike = async (postId, userId) => {
     parseInt(postId);
     try {
-      const response = await axios.post(`http://localhost:8080/api/posts/${postId}/like`, {
+      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/posts/${postId}/like`, {
         userId
       });
       const data = response.data;
