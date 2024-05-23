@@ -250,8 +250,10 @@ router.post('/posts/:postId/like', async (req, res) => {
   try {
     const existingLike = await prisma.likes.findUnique({
       where: {
-          userid: userId,
+        userid_postid: {
+          userid: parseInt(userId),
           postid: parseInt(postId)
+        }
       }
     });
 
