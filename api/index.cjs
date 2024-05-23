@@ -59,6 +59,7 @@ router.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     include: {
       user: true,
+      liked_by: true
     },
   });
 
@@ -247,6 +248,8 @@ router.post('/posts/:postId/like', async (req, res) => {
   const { postId } = req.params;
   const { userId } = req.body
 
+  console.log('POSTID:', postId);
+  console.log('USERID', userId)
   try {
     const existingLike = await prisma.likes.findUnique({
       where: {

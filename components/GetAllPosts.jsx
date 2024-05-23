@@ -23,10 +23,10 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
       setPosts(sortedPosts);
 
-      // const userLikedPosts = sortedPosts
-      //   .filter(post => post.liked_by.some(like => like.user.id === userId))
-      //   .map(post => post.id);
-      // setLikedPosts(userLikedPosts);
+      //  const userLikedPosts = sortedPosts
+      //    .filter(post => post.liked_by.some(like => like.user.userid === userId))
+      //    .map(post => post.id);
+      //  setLikedPosts(userLikedPosts);
     } catch (error) {
       setError(error);
     } finally {
@@ -35,9 +35,30 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
     }
   };
 
+  const handleLike = async (postId, userId) => {
+    parseInt(postId);
+    try {
+      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/posts/${postId}/like`, {
+        userId
+      });
+      const data = response.data;
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
+        )
+      );
+
+      // setLikedPosts(prevLikedPosts =>
+      //   prevLikedPosts.includes(postId) ? prevLikedPosts.filter(id => id !== postId) : [...prevLikedPosts, postId]
+      // );
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [handleLike]);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -60,26 +81,6 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
     }
   }, [onRefresh]);
 
-  const handleLike = async (postId, userId) => {
-    parseInt(postId);
-    try {
-      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/posts/${postId}/like`, {
-        userId
-      });
-      const data = response.data;
-      setPosts(prevPosts =>
-        prevPosts.map(post =>
-          post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
-        )
-      );
-
-      setLikedPosts(prevLikedPosts =>
-        prevLikedPosts.includes(postId) ? prevLikedPosts.filter(id => id !== postId) : [...prevLikedPosts, postId]
-      );
-    } catch (error) {
-      console.error('Error liking post:', error);
-    }
-  };
 
   if (loading) {
     return <ActivityIndicator size={'large'} color='#OOOOff' />;
