@@ -174,25 +174,50 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-router.get('/user/:id', async (req, res, next) => {
-  const {id} = req.params
-  console.log(id)
-   try {
-      const user = await prisma.users.findUnique({
-        where: {
-          id: parseInt(id)
-        }
-      });
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      res.json(user);
-    } catch (error) {
-      next(error);
+router.get("/user/:id", async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const user = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/search/user/:username", async (req, res, next) => {
+  const { username } = req.params;
+  console.log(username);
+  try {
+    const user = await prisma.users.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+        username: true,
+        profile_icon: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/users/:id", async (req, res) => {
   const { id } = req.params;
@@ -224,6 +249,5 @@ router.post("/users/:id", async (req, res) => {
 //     const post = await
 //   }
 // })
-
 
 module.exports = router;
