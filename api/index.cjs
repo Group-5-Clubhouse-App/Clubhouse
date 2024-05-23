@@ -241,4 +241,13 @@ router.post("/users/:id", async (req, res) => {
   }
 });
 
+// router.post('/api/posts/:postId/Like', async (req, res) => {
+//   const { postId } = req.params;
+//   const { userId } = req.body;
+
+//   try {
+//     const post = await
+//   }
+// })
+
 module.exports = router;
