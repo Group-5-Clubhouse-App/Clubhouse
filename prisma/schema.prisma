@@ -57,4 +57,5 @@ model likes {
   userid Int
   post posts @relation(fields: [postid], references: [id])
   postid Int
+  @@unique([userid, postid])
 }

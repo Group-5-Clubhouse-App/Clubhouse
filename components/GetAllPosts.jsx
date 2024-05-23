@@ -8,6 +8,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   const navigation = useNavigation();
 
@@ -20,6 +21,11 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       const data = await response.json();
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
       setPosts(sortedPosts);
+
+      const userLikedPosts = sortedPosts
+        .filter(post => post.liked_by.some(like => like.user.id === userId))
+        .map(post => post.id);
+      setLikedPosts(userLikedPosts);
     } catch (error) {
       setError(error);
     } finally {
@@ -55,18 +61,22 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
 
   const handleLike = async (postId) => {
     try {
-      const response = await fetch(`https://clubhouse-6uml.onrender.com/api/posts/${postId}/like`, {
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ userId }),
       });
       const data = await response.json();
       setPosts(prevPosts =>
         prevPosts.map(post =>
           post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
         )
+      );
+
+      setLikedPosts(prevLikedPosts =>
+        prevLikedPosts.includes(postId) ? prevLikedPosts.filter(id => id !== postId) : [...prevLikedPosts, postId]
       );
     } catch (error) {
       console.error('Error liking post:', error);
@@ -96,23 +106,24 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       {posts.map((item) => (
         <View key={item.id.toString()} style={styles.post}>
           <View style={styles.userInfo}>
-            <Image   source={
-             typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
-             ? { uri: item.user.profile_icon }
-             : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
-             } style={styles.profileIcon} />
-              <TouchableOpacity
-              onPress={() => handleVisitProfile(item.user.id)}
-              >
+            <Image
+              source={
+                typeof item.user.profile_icon === 'string' && item.user.profile_icon.startsWith('http')
+                  ? { uri: item.user.profile_icon }
+                  : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+              }
+              style={styles.profileIcon}
+            />
+            <TouchableOpacity onPress={() => handleVisitProfile(item.user.id)}>
               <Text style={styles.username}>{item.user.username}</Text>
-              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.title}>{item.description}</Text>
           <Text>{new Date(item.time_posted).toLocaleString()}</Text>
           <View style={styles.likeContainer}>
             <Button
-              title={`Like (${item.likes})`}
+              title={`Like (${item.like_count})`}
               onPress={() => handleLike(item.id)}
               color={likedPosts.includes(item.id) ? 'red' : 'blue'} // Change color if liked
             />

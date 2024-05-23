@@ -57,7 +57,6 @@ router.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     include: {
       user: true,
-      liked_by: true
     },
     orderBy: { time_posted: 'desc' }
   });
@@ -245,7 +244,7 @@ router.post("/users/:id", async (req, res) => {
 
 router.post('/api/posts/:postId/Like', async (req, res) => {
   const { postId } = req.params;
-  const userId = req.userId;
+  const userId = req.user.userId;
 
   try {
     const existingLike = await prisma.likes.findUnique({
@@ -285,7 +284,12 @@ router.post('/api/posts/:postId/Like', async (req, res) => {
       });
     }
 
-    res.json({ like_count: updatedPost.like_count });
+    const updatedLikes = await prisma.likes.findMany({
+      where: { postid: parseInt(postId) },
+      include: { user: true }
+    })
+
+    res.json({ like_count: updatedPost.like_count, liked_by: updatedLikes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
