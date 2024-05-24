@@ -10,7 +10,7 @@ const DirectMessages = ({ token, setToken }) => {
       <CheckToken token={token} setToken={setToken} />
       <View>
         <Text style={styles.welcomeText}>Welcome to the DM's page</Text>
-        <UserSearchBar />
+        <UserSearchBar token={token}/>
       </View>
     </ScrollView>
   );

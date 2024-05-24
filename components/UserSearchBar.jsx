@@ -1,11 +1,20 @@
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TextInput, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const UserSearchBar = () => {
+const UserSearchBar = ({token}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [userToFind, setUserToFind] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigation();
+  const navigateToChat = () => {
+    navigate.navigate('Chat');
+  }
 
   const handleSearch = (query) => {
     const lowercaseQuery = query.toLowerCase();
@@ -40,6 +49,23 @@ const UserSearchBar = () => {
     fetchUser();
   }, [searchQuery]);
 
+  const handleMakeDm = async(chosenUserid) => {
+    const decodedToken = jwtDecode(token);
+    const userid = decodedToken.userId;
+    try {
+      const response = await axios.post(`https://clubhouse-6uml.onrender.com/api/dm`, {
+        senderId: userid,
+        recipientId: chosenUserid
+      }
+    )
+    console.log(response);
+
+    } catch (error) {
+      throw error
+    }
+
+  }
+
   return (
     <View>
       <View style={styles.container}>
@@ -50,11 +76,15 @@ const UserSearchBar = () => {
           onChangeText={handleSearch}
         />
       </View>
+      <View style={styles.userBox}>
       {searchQuery.trim() !== '' && (
         <View style={styles.userInfo}>
-          {loading && <Text>Loading...</Text>}
+          {loading && <Text style={{marginTop: 33}}>Loading...</Text>}
           {!loading && error && <Text style={styles.error}>{error}</Text>}
           {!loading && userToFind && (
+           <TouchableOpacity onPress={() => {
+           handleMakeDm(userToFind.id);
+             }}>
             <View style={styles.userInfo}>
               <Image
                 source={
@@ -66,10 +96,12 @@ const UserSearchBar = () => {
               />
               <Text style={styles.username}>{userToFind.username}</Text>
             </View>
+            </TouchableOpacity>
           )}
           {!loading && !userToFind && !error && <Text>No user by that username</Text>}
         </View>
       )}
+      </View>
     </View>
   );
 };
@@ -97,6 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginLeft: 10
   },
   username: {
     fontSize: 20,
@@ -106,7 +139,12 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 16,
+    marginTop: 33
   },
+  userBox: {
+    borderWidth: 1,
+    height: 95
+  }
 });
 
 export default UserSearchBar;
