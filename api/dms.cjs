@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 router.get("/:userid", async (req, res) => {
   const { userid } = req.params;
   const numUserId = parseInt(userid);
+  console.log(numUserId);
 
   const dms = await prisma.dms.findMany({
     where: {

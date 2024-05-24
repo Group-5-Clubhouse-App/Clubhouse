@@ -43,10 +43,6 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
           post.id === postId ? { ...post, like_count: data.like_count, liked_by: data.liked_by } : post
         )
       );
-
-      // setLikedPosts(prevLikedPosts =>
-      //   prevLikedPosts.includes(postId) ? prevLikedPosts.filter(id => id !== postId) : [...prevLikedPosts, postId]
-      // );
     } catch (error) {
       console.error('Error liking post:', error);
     }
@@ -54,7 +50,7 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
 
   useEffect(() => {
     fetchPosts();
-  }, [handleLike]);
+  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
