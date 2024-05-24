@@ -3,6 +3,30 @@ const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+router.get("/:userid", async (req, res) => {
+  const { userid } = req.params;
+  const numUserId = parseInt(userid);
+
+  const dms = await prisma.dms.findMany({
+    where: {
+      users: {
+        some: {
+          id: {
+            equals: numUserId,
+          },
+        },
+      },
+    },
+    include: {
+      users: true,
+      messages: true,
+    },
+  });
+
+  console.log(dms);
+  res.send(dms);
+});
+
 router.post("/", async (req, res) => {
   const { senderId, recipientId } = req.body;
   const numSenderId = parseInt(senderId);
