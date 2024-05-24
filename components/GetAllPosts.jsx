@@ -23,10 +23,6 @@ const GetAllPosts = ({ onRefresh, token, setToken, otherUserid, setOtherUserid }
       const sortedPosts = data.sort((a, b) => new Date(b.time_posted) - new Date(a.time_posted));
       setPosts(sortedPosts);
 
-      //  const userLikedPosts = sortedPosts
-      //    .filter(post => post.liked_by.some(like => like.user.userid === userId))
-      //    .map(post => post.id);
-      //  setLikedPosts(userLikedPosts);
     } catch (error) {
       setError(error);
     } finally {

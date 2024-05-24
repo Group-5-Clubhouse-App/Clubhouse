@@ -108,7 +108,9 @@ const App = () => {
             name="Direct Messages"
             options={{ cardStyle: styles.containerForScreens }}
           >
-            {(props) => <DirectMessages {...props} setToken={setToken} />}
+            {(props) => (
+              <DirectMessages {...props} token={token} setToken={setToken} />
+            )}
           </Stack.Screen>
           <Stack.Screen
             name="Chat"

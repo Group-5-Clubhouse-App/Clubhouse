@@ -39,7 +39,7 @@ const GetAllUserPosts = ({ userid }) => {
 
   return (
     <View style={{paddingBottom: 480}}>
-      <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginVertical: 10}}>Here are your posts!</Text>
+      <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginVertical: 10}}>Here are this users posts!</Text>
       <ScrollView>
       {posts.map((post, index) => (
         <View key={index} style={styles.container}>
