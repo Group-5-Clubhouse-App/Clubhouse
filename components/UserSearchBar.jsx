@@ -12,8 +12,8 @@ const UserSearchBar = ({token}) => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigation();
-  const navigateToChat = () => {
-    navigate.navigate('Chat');
+  const navigateToChat = (data) => {
+    navigate.navigate('Chat', {chatData: data});
   }
 
   const handleSearch = (query) => {
@@ -58,7 +58,9 @@ const UserSearchBar = ({token}) => {
         recipientId: chosenUserid
       }
     )
-    console.log(response);
+    const data = response.data;
+    console.log(data);
+    navigateToChat(data);
 
     } catch (error) {
       throw error
@@ -143,7 +145,8 @@ const styles = StyleSheet.create({
   },
   userBox: {
     borderWidth: 1,
-    height: 95
+    height: 95,
+    marginBottom: 30
   }
 });
 
