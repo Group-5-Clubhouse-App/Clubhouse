@@ -40,7 +40,7 @@ const GetDms = ({ token }) => {
     };
 
     fetchUserDms();
-  }, [token]);
+  }, [token, navigate]);
 
   if (loading) {
     return (

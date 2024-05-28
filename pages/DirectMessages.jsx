@@ -7,14 +7,14 @@ import GetDms from '../components/GetDms';
 const DirectMessages = ({ token, setToken }) => {
 
   return (
-    <ScrollView>
+    <View>
       <CheckToken token={token} setToken={setToken} />
-      <View>
         <Text style={styles.welcomeText}>Welcome to the DM's page</Text>
         <UserSearchBar token={token}/>
+    <ScrollView>
         <GetDms token={token} />
-      </View>
     </ScrollView>
+    </View>
   );
 };
 
