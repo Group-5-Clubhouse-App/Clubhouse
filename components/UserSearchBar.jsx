@@ -14,7 +14,7 @@ const UserSearchBar = ({token, dmId, setDmId}) => {
   const navigate = useNavigation();
   const navigateToChat = (data) => {
     setDmId(data.id)
-    navigate.navigate('Chat');
+    navigate.navigate('Chat', {token});
   }
 
   const handleSearch = (query) => {

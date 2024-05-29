@@ -11,10 +11,13 @@ const GetDms = ({ token, setDmId }) => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigation();
+  
+  const decodedToken = jwtDecode(token);
+  const userid = decodedToken.userId;
 
   const handleNavigateToChat = (dmId) => {
     setDmId(dmId)
-    navigate.navigate('Chat', { dmId })
+    navigate.navigate('Chat', { dmId, token })
   }
 
   useEffect(() => {
@@ -25,8 +28,6 @@ const GetDms = ({ token, setDmId }) => {
         return;
       }
 
-      const decodedToken = jwtDecode(token);
-      const userid = decodedToken.userId;
       try {
         const response = await axios.get(`https://clubhouse-6uml.onrender.com/api/dm/${userid}`);
         const data = response.data;
@@ -71,23 +72,27 @@ const GetDms = ({ token, setDmId }) => {
     <View style={{ paddingBottom: 480 }}>
       <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginVertical: 10 }}>Here are your current DMs!</Text>
       <ScrollView>
-        {dms.map((dm, index) => (
-          <TouchableOpacity onPress={() => handleNavigateToChat(dm.id)}>
-          <View key={index} style={styles.container}>
-            <View style={styles.userInfo}>
-              <Image
-                source={
-                  typeof dm.users[0].profile_icon === 'string' && dm.users[0].profile_icon.startsWith('http')
-                    ? { uri: dm.users[0].profile_icon }
-                    : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
-                }
-                style={styles.profileIcon}
-              />
-              <Text style={styles.username}>{dm.users[0].username}</Text>
-            </View>
-          </View>
-          </TouchableOpacity>
-        ))}
+        {dms.map((dm, index) => {
+          const otherUser = dm.users.find(user => user.id !== userid);
+
+          return (
+            <TouchableOpacity key={index} onPress={() => handleNavigateToChat(dm.id)}>
+              <View style={styles.container}>
+                <View style={styles.userInfo}>
+                  <Image
+                    source={
+                      typeof otherUser.profile_icon === 'string' && otherUser.profile_icon.startsWith('http')
+                        ? { uri: otherUser.profile_icon }
+                        : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+                    }
+                    style={styles.profileIcon}
+                  />
+                  <Text style={styles.username}>{otherUser.username}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </View>
   );
