@@ -126,6 +126,7 @@ const App = () => {
             {(props) => (
               <Chat
                 {...props}
+                token={token}
                 setToken={setToken}
                 dmId={dmId}
                 setDmId={setDmId}
