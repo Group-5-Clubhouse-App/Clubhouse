@@ -5,7 +5,7 @@ import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
-const GetDms = ({ token }) => {
+const GetDms = ({ token, setDmId }) => {
   const [dms, setDms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,6 +13,7 @@ const GetDms = ({ token }) => {
   const navigate = useNavigation();
 
   const handleNavigateToChat = (dmId) => {
+    setDmId(dmId)
     navigate.navigate('Chat', { dmId })
   }
 

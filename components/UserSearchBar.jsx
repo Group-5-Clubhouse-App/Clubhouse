@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TextInput, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const UserSearchBar = ({token}) => {
+const UserSearchBar = ({token, dmId, setDmId}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [userToFind, setUserToFind] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,8 @@ const UserSearchBar = ({token}) => {
 
   const navigate = useNavigation();
   const navigateToChat = (data) => {
-    navigate.navigate('Chat', {chatData: data});
+    setDmId(data.id)
+    navigate.navigate('Chat');
   }
 
   const handleSearch = (query) => {
@@ -59,7 +60,6 @@ const UserSearchBar = ({token}) => {
       }
     )
     const data = response.data;
-    console.log(data);
     navigateToChat(data);
 
     } catch (error) {
