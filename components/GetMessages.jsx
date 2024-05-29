@@ -49,6 +49,17 @@ const GetMessages = ({ dmId }) => {
     <ScrollView style={styles.flatListContainer}>
       {messages.map((message) => (
         <View key={message.id.toString()} style={styles.post}>
+          <View style={styles.userInfo}>
+            <Image
+              source={
+                typeof message.user.profile_icon === 'string' && message.user.profile_icon.startsWith('http')
+                  ? { uri: message.user.profile_icon }
+                  : require('../imgs/default-avatar-profile-icon-of-social-media-user-in-clipart-style-vector.jpg')
+              }
+              style={styles.profileIcon}
+            />
+              <Text style={styles.username}>{message.user.username}</Text>
+              </View>
           <Text style={styles.title}>{message.content}</Text>
           <Text>{new Date(message.time_sent).toLocaleString()}</Text>
         </View>
@@ -77,7 +88,7 @@ const styles = StyleSheet.create({
   },
   post: {
     marginBottom: 1,
-    padding: 20,
+    padding: 10,
     borderRadius: 4,
     borderWidth: 2,
     borderColor: 'slategrey',
@@ -85,11 +96,11 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   profileIcon: {
-    width: 40,
-    height: 40,
+    width: 26,
+    height: 26,
     borderRadius: 20,
     marginRight: 10,
     borderWidth: 1
