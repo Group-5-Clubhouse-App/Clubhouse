@@ -79,4 +79,76 @@ router.post("/", async (req, res) => {
   res.send(conversation);
 });
 
+router.post('/:dmId/messages', async (req, res) => {
+  const { dmId } = req.params;
+  const { userid, content } = req.body;
+
+  console.log(dmId);
+  console.log(userid);
+
+  try{
+    const numDmId = parseInt(dmId);
+    const numUserId = parseInt(userid);
+
+    const dm = await prisma.dms.findUnique({
+      where: { id: numDmId },
+      include: { users: true },
+    });
+
+    if (!dm) {
+      return res.status(404).send("DM conversation not found");
+    }
+
+    const isSenderInConvo = dm.users.some(user => user.id === numUserId);
+    if (!isSenderInConvo) {
+      return res.status(403).send("Sender is not part of this conversation.");
+    }
+
+    const newMessage = await prisma.messages.create({
+      data: {
+        content,
+        user: { connect: { id: numUserId } },
+        dm: { connect: { id: numDmId } },
+      },
+    });
+
+    console.log(newMessage);
+    res.status(201).send(newMessage);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error has occured while saving the message, whoops.");
+  }
+});
+
+router.get("/:dmId/messages", async (req, res) => {
+  const { dmId } = req.params;
+
+  try {
+    const numDmId = parseInt(dmId);
+
+    console.log(`Fetching messages for DM ID: ${numDmId}`);
+
+    const dm = await prisma.dms.findUnique({
+      where: { id: numDmId },
+      include: { messages: true },
+    });
+
+    if (!dm) {
+      return res.status(404).send("DM conversation not found.");
+    }
+
+    const messages = await prisma.messages.findMany({
+      where: { dmid: numDmId },
+    });
+
+    console.log(messages);
+    res.send(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching messages.");
+  }
+});
+
+module.exports = router;
+
 module.exports = router;
