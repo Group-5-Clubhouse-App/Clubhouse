@@ -72,21 +72,16 @@ router.post("/", async (req, res) => {
         },
       },
     });
-    console.log(newConversation);
     res.send(newConversation);
   }
-  console.log(conversation);
   res.send(conversation);
 });
 
-router.post('/:dmId/messages', async (req, res) => {
+router.post("/:dmId/messages", async (req, res) => {
   const { dmId } = req.params;
   const { userid, content } = req.body;
 
-  console.log(dmId);
-  console.log(userid);
-
-  try{
+  try {
     const numDmId = parseInt(dmId);
     const numUserId = parseInt(userid);
 
@@ -99,7 +94,7 @@ router.post('/:dmId/messages', async (req, res) => {
       return res.status(404).send("DM conversation not found");
     }
 
-    const isSenderInConvo = dm.users.some(user => user.id === numUserId);
+    const isSenderInConvo = dm.users.some((user) => user.id === numUserId);
     if (!isSenderInConvo) {
       return res.status(403).send("Sender is not part of this conversation.");
     }
@@ -116,7 +111,9 @@ router.post('/:dmId/messages', async (req, res) => {
     res.status(201).send(newMessage);
   } catch (error) {
     console.error(error);
-    res.status(500).send("An error has occured while saving the message, whoops.");
+    res
+      .status(500)
+      .send("An error has occured while saving the message, whoops.");
   }
 });
 
@@ -139,6 +136,14 @@ router.get("/:dmId/messages", async (req, res) => {
 
     const messages = await prisma.messages.findMany({
       where: { dmid: numDmId },
+      include: {
+        user: {
+          select: {
+            username: true,
+            profile_icon: true,
+          },
+        },
+      },
     });
 
     console.log(messages);
