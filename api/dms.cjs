@@ -120,4 +120,35 @@ router.post('/:dmId/messages', async (req, res) => {
   }
 });
 
+router.get("/:dmId/messages", async (req, res) => {
+  const { dmId } = req.params;
+
+  try {
+    const numDmId = parseInt(dmId);
+
+    console.log(`Fetching messages for DM ID: ${numDmId}`);
+
+    const dm = await prisma.dms.findUnique({
+      where: { id: numDmId },
+      include: { messages: true },
+    });
+
+    if (!dm) {
+      return res.status(404).send("DM conversation not found.");
+    }
+
+    const messages = await prisma.messages.findMany({
+      where: { dmid: numDmId },
+    });
+
+    console.log(messages);
+    res.send(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while fetching messages.");
+  }
+});
+
+module.exports = router;
+
 module.exports = router;
