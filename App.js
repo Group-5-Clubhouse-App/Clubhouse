@@ -20,6 +20,7 @@ const Stack = createStackNavigator();
 const App = () => {
   const [token, setToken] = useState("");
   const [otherUserid, setOtherUserid] = useState("");
+  const [dmId, setDmId] = useState("");
   useEffect(() => {
     const getToken = async () => {
       const initialToken = await AsyncStorage.getItem("token");
@@ -109,14 +110,27 @@ const App = () => {
             options={{ cardStyle: styles.containerForScreens }}
           >
             {(props) => (
-              <DirectMessages {...props} token={token} setToken={setToken} />
+              <DirectMessages
+                {...props}
+                token={token}
+                setToken={setToken}
+                dmId={dmId}
+                setDmId={setDmId}
+              />
             )}
           </Stack.Screen>
           <Stack.Screen
             name="Chat"
             options={{ cardStyle: styles.containerForScreens }}
           >
-            {(props) => <Chat {...props} setToken={setToken} />}
+            {(props) => (
+              <Chat
+                {...props}
+                setToken={setToken}
+                dmId={dmId}
+                setDmId={setDmId}
+              />
+            )}
           </Stack.Screen>
           <Stack.Screen
             name="User Profile"
