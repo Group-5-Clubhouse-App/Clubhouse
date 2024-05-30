@@ -130,23 +130,39 @@ router.get("/posts/user/:userid", async (req, res) => {
 
 router.delete("/post/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  console.log(req.user);
-  const post = await prisma.posts.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
-  if (!post || post.userid !== req.user.userId) {
-    return res.status(401).json({ message: "Unauthorized" });
+  const userId = req.user.userId;
+
+  try {
+    const post = await prisma.posts.findUnique({
+      where: { id: parseInt(id) },
+      include: { liked_by: true },
+    });
+
+    if (!post) {
+      console.log(`Post not found: ${id}`);
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.userid !== userId) {
+      console.log(
+        `Unauthorized delete attempt by user: ${userId} for post: ${id}`
+      );
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    await prisma.likes.deleteMany({
+      where: { postid: parseInt(id) },
+    });
+
+    await prisma.posts.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.json({ message: "Post deleted" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-
-  await prisma.posts.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
-
-  res.json({ message: "Post deleted" });
 });
 
 router.put("/users/:id", async (req, res) => {
