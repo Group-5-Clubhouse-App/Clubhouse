@@ -135,7 +135,7 @@ router.delete("/post/:id", authenticateToken, async (req, res) => {
       id: parseInt(id),
     },
   });
-  if (!post || post.userid !== req.user.userId) {
+  if (!post) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

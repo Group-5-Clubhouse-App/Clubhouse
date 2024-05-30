@@ -9,6 +9,7 @@ const GetAllUserPosts = ({ token }) => {
   const [posts, setPosts] = useState([]);
 
   const handleDeletePost = async ({token, postid}) => {
+    console.log(postid)
     try {
       const response = await axios.delete(`https://clubhouse-6uml.onrender.com/api/post/${postid}`, 
         {
