@@ -128,14 +128,15 @@ router.get("/posts/user/:userid", async (req, res) => {
   res.json(posts);
 });
 
-router.delete("/post/:id", async (req, res) => {
+router.delete("/post/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
+  console.log(req.user);
   const post = await prisma.posts.findUnique({
     where: {
       id: parseInt(id),
     },
   });
-  if (!post) {
+  if (!post || post.userid !== req.user.userId) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
