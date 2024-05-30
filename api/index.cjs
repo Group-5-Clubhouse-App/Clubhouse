@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-const dmRouter = require("./dms.cjs")
+const dmRouter = require("./dms.cjs");
 const prisma = new PrismaClient();
 
 router.use("/dm", dmRouter);
@@ -129,9 +129,10 @@ router.get("/posts/user/:userid", async (req, res) => {
 });
 
 router.delete("/post/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
   const post = await prisma.posts.findUnique({
     where: {
-      id: parseInt(req.params.id),
+      id: parseInt(id),
     },
   });
   if (!post || post.userid !== req.user.userId) {
@@ -140,7 +141,7 @@ router.delete("/post/:id", authenticateToken, async (req, res) => {
 
   await prisma.posts.delete({
     where: {
-      id: parseInt(req.params.id),
+      id: parseInt(id),
     },
   });
 
@@ -244,62 +245,60 @@ router.post("/users/:id", async (req, res) => {
   }
 });
 
-router.post('/posts/:postId/like', async (req, res) => {
+router.post("/posts/:postId/like", async (req, res) => {
   const { postId } = req.params;
-  const { userId } = req.body
+  const { userId } = req.body;
 
-  console.log('POSTID:', postId);
-  console.log('USERID', userId)
+  console.log("POSTID:", postId);
+  console.log("USERID", userId);
   try {
     const existingLike = await prisma.likes.findUnique({
       where: {
         userid_postid: {
           userid: parseInt(userId),
-          postid: parseInt(postId)
-        }
-      }
+          postid: parseInt(postId),
+        },
+      },
     });
 
     let updatedPost;
     if (existingLike) {
       await prisma.likes.delete({
         where: {
-          id: existingLike.id
-        }
+          id: existingLike.id,
+        },
       });
       updatedPost = await prisma.posts.update({
         where: { id: parseInt(postId) },
         data: {
-          like_count: { decrement: 1 }
-        }
+          like_count: { decrement: 1 },
+        },
       });
     } else {
       await prisma.likes.create({
         data: {
           user: { connect: { id: userId } },
-          post: { connect: { id: parseInt(postId) } }
-        }
+          post: { connect: { id: parseInt(postId) } },
+        },
       });
       updatedPost = await prisma.posts.update({
         where: { id: parseInt(postId) },
         data: {
-          like_count: { increment: 1 }
-        }
+          like_count: { increment: 1 },
+        },
       });
     }
 
     const updatedLikes = await prisma.likes.findMany({
       where: { postid: parseInt(postId) },
-      include: { user: true }
-    })
+      include: { user: true },
+    });
 
     res.json({ like_count: updatedPost.like_count, liked_by: updatedLikes });
   } catch (error) {
-    console.error('Error liking post:', error);
+    console.error("Error liking post:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-
 module.exports = router;
-
