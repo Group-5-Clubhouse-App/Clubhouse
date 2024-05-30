@@ -12,11 +12,6 @@ const GetAllUserPosts = ({ token }) => {
     console.log(postid)
     try {
       const response = await axios.delete(`https://clubhouse-6uml.onrender.com/api/post/${postid}`, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       return response.data;
     } catch (error) {

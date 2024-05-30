@@ -128,7 +128,7 @@ router.get("/posts/user/:userid", async (req, res) => {
   res.json(posts);
 });
 
-router.delete("/post/:id", authenticateToken, async (req, res) => {
+router.delete("/post/:id", async (req, res) => {
   const { id } = req.params;
   const post = await prisma.posts.findUnique({
     where: {
